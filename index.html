@@ -3,18 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AWENA CAR — Auto Detailing Management System</title>
+  <title>AWENA CAR — Auto Detailing Halabja</title>
   
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#0d1117">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   
-  <!-- Tailwind CSS & Icons -->
+  <!-- Tailwind CSS & Lucide Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Supabase Client -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
     tailwind.config = {
@@ -27,7 +24,6 @@
               400: '#38bdf8',
               500: '#0ea5e9',
               600: '#0284c7',
-              900: '#0c4a6e',
               dark: '#0d1117',
               card: '#161b22',
               border: '#30363d'
@@ -38,15 +34,16 @@
     }
   </script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700;900&family=Inter:wght@400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700;900&display=swap');
     body {
-      font-family: 'Vazirmatn', 'Inter', sans-serif;
+      font-family: 'Vazirmatn', sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
     .slider-comparison-container {
       position: relative;
       overflow: hidden;
       user-select: none;
+      touch-action: pan-y;
     }
     .slider-overlay-img {
       position: absolute;
@@ -56,19 +53,14 @@
       height: 100%;
       object-fit: cover;
     }
-    .hide-scrollbar::-webkit-scrollbar {
-      display: none;
-    }
-    .hide-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
   </style>
 </head>
-<body class="bg-brand-dark text-slate-100 min-h-screen pb-20 select-none">
+<body class="bg-brand-dark text-slate-100 min-h-screen pb-16 select-none">
 
-  <!-- TOP APP BAR -->
-  <header class="sticky top-0 z-40 bg-brand-card/90 backdrop-blur border-b border-brand-border px-4 py-3 flex items-center justify-between">
+  <!-- ==========================================
+       1. سەرپەڕەی فەرمی (Header)
+       ========================================== -->
+  <header class="sticky top-0 z-40 bg-brand-card/95 backdrop-blur border-b border-brand-border px-4 py-3 flex items-center justify-between">
     <div class="flex items-center gap-3">
       <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-sky-400 flex items-center justify-center shadow-lg shadow-sky-500/20 font-black text-xl text-white">
         A
@@ -78,1124 +70,299 @@
           <span>AWENA CAR</span>
           <span class="text-[10px] bg-brand-500/20 text-brand-400 px-1.5 py-0.5 rounded border border-brand-400/30">هەڵەبجە</span>
         </h1>
-        <p class="text-[11px] text-slate-400" id="headerSubtitle">سیستەمی بەڕێوەبردنی پۆڵیش و جوانکاری</p>
+        <p class="text-[11px] text-slate-400">ناوەندی پۆڵیش و نانۆ سیرامیک</p>
       </div>
     </div>
 
-    <!-- Actions (Language Toggle & Online Sync Indicator) -->
+    <!-- دوگمەی گۆڕینی دۆخ (ئەرشیفی تایبەت / پۆرتفۆلیۆی کڕیار) -->
     <div class="flex items-center gap-2">
-      <button onclick="toggleLanguage()" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-800 border border-brand-border text-slate-300 hover:text-white transition">
-        <span id="langLabel">English</span>
+      <button onclick="toggleAppMode()" id="modeSwitchBtn" class="px-3 py-1.5 text-xs font-bold rounded-xl bg-slate-800 border border-brand-border text-brand-400 flex items-center gap-1.5 shadow">
+        <i data-lucide="eye" class="w-4 h-4"></i>
+        <span id="modeSwitchLabel">نیشاندانی کڕیار</span>
       </button>
-      <div id="syncStatusBadge" class="flex items-center gap-1 px-2 py-1 rounded-full text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span id="syncText">ئۆنلاین</span>
-      </div>
     </div>
   </header>
 
-  <!-- MAIN VIEWPORT CONTAINER -->
-  <main id="appContent" class="max-w-md mx-auto p-4 space-y-4">
-    <!-- Content injected dynamically via JavaScript -->
-  </main>
+  <!-- ==========================================
+       2. شاشەی ئەرشیفی تایبەتی شوێنکار (Workshop View)
+       ========================================== -->
+  <main id="workshopView" class="max-w-md mx-auto p-4 space-y-4">
+    
+    <!-- پوختەی ئامارەکان -->
+    <div class="grid grid-cols-2 gap-3">
+      <div class="bg-brand-card p-3 rounded-2xl border border-brand-border flex items-center justify-between">
+        <div>
+          <span class="text-[11px] text-slate-400 block">سەرجەم سەیارەکان</span>
+          <span class="text-xl font-black text-white" id="statTotalCars">0</span>
+        </div>
+        <div class="p-2.5 bg-sky-500/10 text-sky-400 rounded-xl">
+          <i data-lucide="car" class="w-5 h-5"></i>
+        </div>
+      </div>
 
-  <!-- BOTTOM NAVIGATION BAR (Android Ergonomic Friendly) -->
-  <nav class="fixed bottom-0 left-0 right-0 z-50 bg-brand-card/95 backdrop-blur border-t border-brand-border px-2 py-1.5">
-    <div class="max-w-md mx-auto grid grid-cols-5 gap-1 text-center">
-      <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn py-1 px-2 rounded-xl flex flex-col items-center justify-center text-brand-400 font-semibold text-[11px] transition">
-        <i data-lucide="layout-dashboard" class="w-5 h-5 mb-0.5"></i>
-        <span data-i18n="nav_dashboard">داشبۆرد</span>
+      <div class="bg-brand-card p-3 rounded-2xl border border-brand-border flex items-center justify-between">
+        <div>
+          <span class="text-[11px] text-slate-400 block">داهاتی وەرگیراو</span>
+          <span class="text-base font-black text-emerald-400" id="statTotalRevenue">0 <span class="text-[10px]">د.ع</span></span>
+        </div>
+        <div class="p-2.5 bg-emerald-500/10 text-emerald-400 rounded-xl">
+          <i data-lucide="wallet" class="w-5 h-5"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- دوگمە سەرەکییەکان -->
+    <div class="space-y-2">
+      <button onclick="openNewCarModal()" class="w-full py-3.5 px-4 bg-brand-600 hover:bg-brand-500 active:scale-[0.99] text-white font-bold text-sm rounded-2xl shadow-lg shadow-sky-600/30 flex items-center justify-center gap-2 transition">
+        <i data-lucide="plus-circle" class="w-5 h-5"></i>
+        <span>تۆمارکردنی سەیارەی نوێ</span>
       </button>
-      <button onclick="switchTab('jobs')" id="nav-jobs" class="nav-btn py-1 px-2 rounded-xl flex flex-col items-center justify-center text-slate-400 hover:text-slate-200 text-[11px] transition">
-        <i data-lucide="wrench" class="w-5 h-5 mb-0.5"></i>
-        <span data-i18n="nav_jobs">کارەکان</span>
-      </button>
-      <button onclick="switchTab('customers')" id="nav-customers" class="nav-btn py-1 px-2 rounded-xl flex flex-col items-center justify-center text-slate-400 hover:text-slate-200 text-[11px] transition">
-        <i data-lucide="users" class="w-5 h-5 mb-0.5"></i>
-        <span data-i18n="nav_customers">موشتەری</span>
-      </button>
-      <button onclick="switchTab('portfolio')" id="nav-portfolio" class="nav-btn py-1 px-2 rounded-xl flex flex-col items-center justify-center text-slate-400 hover:text-slate-200 text-[11px] transition">
-        <i data-lucide="sparkles" class="w-5 h-5 mb-0.5"></i>
-        <span data-i18n="nav_portfolio">پۆرتفۆلیۆ</span>
-      </button>
-      <button onclick="switchTab('finance')" id="nav-finance" class="nav-btn py-1 px-2 rounded-xl flex flex-col items-center justify-center text-slate-400 hover:text-slate-200 text-[11px] transition">
-        <i data-lucide="wallet" class="w-5 h-5 mb-0.5"></i>
-        <span data-i18n="nav_finance">حیسابات</span>
+
+      <button onclick="copyPublicPortfolioLink()" class="w-full py-3 px-4 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 active:scale-[0.99] text-white font-bold text-xs rounded-2xl shadow-lg shadow-amber-600/20 flex items-center justify-center gap-2 transition">
+        <i data-lucide="share-2" class="w-4 h-4"></i>
+        <span>کۆپیکردنی لینکی هەموو سەیارەکان بۆ کڕیار</span>
       </button>
     </div>
-  </nav>
 
-  <!-- GLOBAL MODAL (For forms, photo sliders, receipts) -->
-  <div id="appModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
-    <div id="modalContainer" class="bg-brand-card w-full max-w-md max-h-[90vh] overflow-y-auto rounded-t-2xl sm:rounded-2xl border border-brand-border shadow-2xl p-4 space-y-4">
-      <!-- Injected modal body -->
+    <!-- گەڕانی خێرا -->
+    <div class="relative">
+      <i data-lucide="search" class="w-4 h-4 absolute top-3.5 start-3 text-slate-400"></i>
+      <input type="text" oninput="handleSearch(this.value)" placeholder="گەڕان بەپێی جۆری سەیارە، تابلۆ، یان ناوی موشتەری..." 
+             class="w-full bg-brand-card border border-brand-border rounded-xl py-2.5 ps-9 pe-4 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500">
+    </div>
+
+    <!-- لیستی سەیارە تۆمارکراوەکان -->
+    <div class="space-y-2">
+      <h2 class="text-xs font-bold text-slate-400 px-1">سەیارە تۆمارکراوەکانی شوێنکار</h2>
+      <div id="carsListContainer" class="space-y-3">
+        <!-- بە شێوەی خۆکار لێرە دروست دەبێت -->
+      </div>
+    </div>
+  </main>
+
+  <!-- ==========================================
+       3. شاشەی نیشاندان بۆ کڕیار (Public Showcase View)
+       ========================================== -->
+  <main id="showcaseView" class="max-w-md mx-auto p-4 space-y-4 hidden">
+    <!-- پەیامی سەرەکی بۆ کڕیار -->
+    <div class="bg-gradient-to-b from-brand-card to-slate-900 p-4 rounded-2xl border border-brand-border text-center space-y-1.5 shadow-xl">
+      <span class="text-[10px] bg-brand-500/20 text-brand-400 border border-brand-500/30 px-2 py-0.5 rounded-full font-semibold">پێشانگای فەرمی کارەکانمان</span>
+      <h2 class="text-lg font-black text-white">پۆڵیش و نانۆ سیرامیکی ئاوێنە کار</h2>
+      <p class="text-xs text-slate-400">نموونەی ئەو ئۆتۆمبێلانەی بە بەرزترین کوالێتی و باشترین مەوادی ئەڵمانی لە هەڵەبجە ئیشیان بۆ کراوە.</p>
+    </div>
+
+    <!-- کارەکان بە ڕیز بۆ کڕیار -->
+    <div id="showcaseCardsContainer" class="space-y-5">
+      <!-- کارەکان لێرە بە شێوەی گشتی پیشان دەدرێن -->
+    </div>
+
+    <!-- دوگمەی واتسئەپی جێگیر بۆ نۆرەگرتنی کڕیار -->
+    <div class="pt-4 pb-8">
+      <a href="https://api.whatsapp.com/send?phone=9647501234567&text=سڵاو،%20سەیری%20نموونەی%20کارەکانتانم%20کرد،%20دەمەوێت%20نۆرە%20بگرم%20بۆ%20سەیارەکەم." 
+         target="_blank" 
+         class="w-full py-3.5 px-4 bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white font-extrabold text-sm rounded-2xl shadow-xl shadow-emerald-700/30 flex items-center justify-center gap-2 transition text-center">
+        <i data-lucide="message-circle" class="w-5 h-5"></i>
+        <span>پەیوەندی لە واتسئەپ بۆ وەرگرتنی نۆرە</span>
+      </a>
+    </div>
+  </main>
+
+  <!-- ==========================================
+       4. مۆداڵی تۆمارکردنی سەیارەی نوێ
+       ========================================== -->
+  <div id="newCarModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-brand-card w-full max-w-md max-h-[92vh] overflow-y-auto rounded-t-2xl sm:rounded-2xl border border-brand-border shadow-2xl p-4 space-y-4">
+      
+      <div class="flex items-center justify-between border-b border-brand-border pb-3">
+        <h3 class="font-bold text-base text-white">تۆمارکردنی سەیارە و کارەکان</h3>
+        <button onclick="closeNewCarModal()" class="text-slate-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleCarSubmit(event)" class="space-y-3.5 text-xs">
+        
+        <!-- بەشی موشتەری -->
+        <div class="bg-slate-900/60 p-3 rounded-xl border border-brand-border space-y-2">
+          <span class="text-[11px] font-bold text-brand-400 block">زانیاری خاوەن سەیارە (تایبەت بۆ خۆت)</span>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-slate-300 block mb-1">ناوی خاوەن سەیارە *</label>
+              <input type="text" id="cust_name" required placeholder="ئامانج جاف" class="w-full bg-slate-800 border border-brand-border rounded-xl p-2.5 text-white focus:outline-none focus:border-brand-500">
+            </div>
+            <div>
+              <label class="text-slate-300 block mb-1">ژمارەی مۆبایل *</label>
+              <input type="tel" id="cust_phone" required placeholder="0750 123 4567" class="w-full bg-slate-800 border border-brand-border rounded-xl p-2.5 text-white dir-ltr text-right focus:outline-none focus:border-brand-500">
+            </div>
+          </div>
+        </div>
+
+        <!-- بەشی سەیارە -->
+        <div class="bg-slate-900/60 p-3 rounded-xl border border-brand-border space-y-2">
+          <span class="text-[11px] font-bold text-brand-400 block">زانیاری سەیارە</span>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-slate-300 block mb-1">جۆر و مۆدێل *</label>
+              <input type="text" id="car_model" required placeholder="Toyota Land Cruiser" class="w-full bg-slate-800 border border-brand-border rounded-xl p-2.5 text-white focus:outline-none focus:border-brand-500">
+            </div>
+            <div>
+              <label class="text-slate-300 block mb-1">ساڵ *</label>
+              <input type="number" id="car_year" required value="2023" class="w-full bg-slate-800 border border-brand-border rounded-xl p-2.5 text-white focus:outline-none">
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-slate-300 block mb-1">ڕەنگی سەیارە *</label>
+              <input type="text" id="car_color" required placeholder="سپی سەدەفی" class="w-full bg-slate-800 border border-brand-border rounded-xl p-2.5 text-white focus:outline-none">
+            </div>
+            <div>
+              <label class="text-slate-300 block mb-1">ژمارەی تابلۆ *</label>
+              <input type="text" id="car_plate" required placeholder="سلێمانی 21 A 12345" class="w-full bg-slate-800 border border-brand-border rounded-xl p-2.5 text-white focus:outline-none">
+            </div>
+          </div>
+        </div>
+
+        <!-- ئەو کارانەی بۆی کراوە + پارە -->
+        <div class="bg-slate-900/60 p-3 rounded-xl border border-brand-border space-y-2">
+          <span class="text-[11px] font-bold text-brand-400 block">کار و پارەی وەرگیراو</span>
+          <div>
+            <label class="text-slate-300 block mb-1">چ کارێکت بۆ کردووە؟ *</label>
+            <input type="text" id="car_services" required placeholder="پۆڵیشی دوو قۆناغ، لابردنی کڕان، نانۆ سیرامیک" class="w-full bg-slate-800 border border-brand-border rounded-xl p-2.5 text-white focus:outline-none">
+          </div>
+          <div>
+            <label class="text-slate-300 block mb-1">بڕی پارەی وەرگیراو (دیناری عێراقی) *</label>
+            <input type="number" id="car_price" required placeholder="150000" class="w-full bg-slate-800 border border-brand-border rounded-xl p-2.5 text-emerald-400 font-bold text-sm focus:outline-none">
+          </div>
+        </div>
+
+        <!-- بەشی وێنەکان (فرە وێنەی پێش و پاش) -->
+        <div class="bg-slate-900/60 p-3 rounded-xl border border-brand-border space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold text-brand-400">وێنەکانی پێش و پاش (Before / After)</span>
+            <button type="button" onclick="addNewPhotoPairInputs()" class="text-[11px] text-sky-400 hover:underline flex items-center gap-1">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>زیادکردنی وێنەی تر</span>
+            </button>
+          </div>
+
+          <div id="photoPairsContainer" class="space-y-3">
+            <!-- جووتی یەکەمی وێنەکان بە شێوەی دیفۆڵت لێرەیە -->
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-3.5 bg-brand-600 hover:bg-brand-500 active:scale-[0.99] text-white font-bold text-sm rounded-xl shadow-lg shadow-sky-600/30">
+          پاشەکەوتکردن لە ئەرشیف
+        </button>
+      </form>
     </div>
   </div>
 
+  <!-- شاراوە: دوو ئینپوتی فایل بۆ کامێرا و بۆ گەلەری -->
+  <input type="file" id="cameraInput" accept="image/*" capture="environment" class="hidden">
+  <input type="file" id="galleryInput" accept="image/*" class="hidden">
+
+  <!-- ==========================================
+       5. کۆدی جاڤاسکریپتی ئەپڵیکەیشن (Application Logic)
+       ========================================== -->
   <script>
-    /* =====================================================================
-       I18N & DICTIONARY ENGINE (Kurdish Sorani & English)
-       ===================================================================== */
-    const I18N = {
-      ckb: {
-        dir: 'rtl',
-        appName: 'ئاوێنە کار',
-        subtitle: 'سیستەمی بەڕێوەبردنی پۆڵیش و جوانکاری',
-        nav_dashboard: 'داشبۆرد',
-        nav_jobs: 'کارەکان',
-        nav_customers: 'موشتەری',
-        nav_portfolio: 'پۆرتفۆلیۆ',
-        nav_finance: 'حیسابات',
-        total_customers: 'سەرجەم موشتەری',
-        total_vehicles: 'ئۆتۆمبێلەکان',
-        active_jobs: 'کارە لەسەرکراوەکان',
-        completed_jobs: 'تەواوکراو',
-        today_appointments: 'نۆرەی ئەمڕۆ',
-        total_revenue: 'داهاتی گشتی',
-        unpaid_balances: 'قەرزی ماوە',
-        quick_actions: 'کرداری خێرا',
-        new_job: 'کاری نوێ',
-        new_customer: 'موشتەری نوێ',
-        search_placeholder: 'گەڕان بەپێی ژمارەی تابلۆ، ناو، مۆبایل...',
-        iqd: 'د.ع',
-        usd: '$',
-        status_appointment: 'نۆرە دیاریکراو',
-        status_received: 'ئۆتۆمبێل وەرگیرا',
-        status_inspection: 'پشکنینی سەرەتایی',
-        status_washing_prep: 'شتن و پاکتاوکردن',
-        status_paint_inspection: 'پشکنینی میکرۆنی بۆیاخ',
-        status_polishing: 'پۆڵیش و کوشنکاری',
-        status_finishing_qc: 'سیرامیک و کۆنتڕۆڵی کوالێتی',
-        status_completed: 'کارەکە تەواوبوو',
-        status_delivered: 'ڕادەستی خاوەنی کرایەوە',
-        status_cancelled: 'هەڵوەشێنراوەتەوە',
-        customer_name: 'ناوی سیانی',
-        phone: 'ژمارەی مۆبایل',
-        plate: 'ژمارەی تابلۆ',
-        make_model: 'جۆر و مۆدێل',
-        year: 'ساڵ',
-        color: 'ڕەنگ',
-        services: 'خزمەتگوزارییەکان',
-        total_price: 'نرخی گشتی',
-        paid: 'بڕی دراو',
-        remaining: 'ماوە',
-        save: 'پاشەکەوتکردن',
-        cancel: 'داخستن',
-        whatsapp_share: 'ناردنی پسوڵە بۆ واتسئەپ',
-        compare_slider: 'بەراوردکردنی پێش و پاش',
-        take_photo: 'گرتنی وێنە بە کامێرا',
-        publish_portfolio: 'بڵاوکردنەوە لە پۆرتفۆلیۆی گشتی'
-      },
-      en: {
-        dir: 'ltr',
-        appName: 'AWENA CAR',
-        subtitle: 'Auto Detailing & Polishing Management',
-        nav_dashboard: 'Dashboard',
-        nav_jobs: 'Jobs',
-        nav_customers: 'Customers',
-        nav_portfolio: 'Portfolio',
-        nav_finance: 'Finance',
-        total_customers: 'Customers',
-        total_vehicles: 'Vehicles',
-        active_jobs: 'Active Jobs',
-        completed_jobs: 'Completed',
-        today_appointments: 'Today Appts',
-        total_revenue: 'Total Revenue',
-        unpaid_balances: 'Unpaid Balance',
-        quick_actions: 'Quick Actions',
-        new_job: 'New Job',
-        new_customer: 'New Customer',
-        search_placeholder: 'Search plate, name, phone...',
-        iqd: 'IQD',
-        usd: '$',
-        status_appointment: 'Appointment',
-        status_received: 'Vehicle Received',
-        status_inspection: 'Initial Inspection',
-        status_washing_prep: 'Washing & Decontamination',
-        status_paint_inspection: 'Paint Depth Inspection',
-        status_polishing: 'Polishing & Correction',
-        status_finishing_qc: 'Ceramic Coating & QC',
-        status_completed: 'Completed',
-        status_delivered: 'Delivered to Owner',
-        status_cancelled: 'Cancelled',
-        customer_name: 'Full Name',
-        phone: 'Phone Number',
-        plate: 'License Plate',
-        make_model: 'Make & Model',
-        year: 'Year',
-        color: 'Color',
-        services: 'Services',
-        total_price: 'Total Price',
-        paid: 'Amount Paid',
-        remaining: 'Remaining',
-        save: 'Save Record',
-        cancel: 'Close',
-        whatsapp_share: 'Send Receipt via WhatsApp',
-        compare_slider: 'Before & After Slider',
-        take_photo: 'Capture Photo',
-        publish_portfolio: 'Publish to Showcase'
+    // داتابەیسی ناوخۆیی لەسەر مۆبایلی شوێنکار
+    let carsDb = JSON.parse(localStorage.getItem('awena_cars_db')) || [
+      {
+        id: 'car-101',
+        customerName: 'ئامانج جاف',
+        customerPhone: '07501234567',
+        makeModel: 'Toyota Land Cruiser',
+        year: 2023,
+        color: 'سپی سەدەفی',
+        plate: 'سلێمانی 21 B 8899',
+        services: 'تەعدیلی بۆیاخی دوو قۆناغ + نانۆ سیرامیکی ئەڵمانی',
+        pricePaid: 250000,
+        date: '2026-03-25',
+        photos: [
+          {
+            title: 'کاپۆت و بەرگە بزوێنەر',
+            before: 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=600&q=80',
+            after: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=600&q=80'
+          }
+        ]
       }
-    };
-
-    let currentLang = localStorage.getItem('awena_lang') || 'ckb';
-    let currentTab = 'dashboard';
-
-    /* =====================================================================
-       INITIAL DEFAULT DATA (Workshop Local Cache)
-       ===================================================================== */
-    const DEFAULT_SERVICES = [
-      { id: 's1', name_ku: 'شتن و ئامادەکاری پێشکەوتوو', name_en: 'Exterior Wash & Prep', price: 25000 },
-      { id: 's2', name_ku: 'پاکتاوکردنی بۆیاخ (کلەی بار)', name_en: 'Paint Decontamination (Clay Bar)', price: 35000 },
-      { id: 's3', name_ku: 'پۆڵیشی یەک قۆناغ', name_en: 'One-Step Polish & Enhance', price: 80000 },
-      { id: 's4', name_ku: 'تەعدیلی بۆیاخی دوو قۆناغ', name_en: 'Two-Step Paint Correction', price: 150000 },
-      { id: 's5', name_ku: 'تەعدیلی تەواوی سڕینەوەی کڕان', name_en: 'Multi-Step Swirl Removal', price: 220000 },
-      { id: 's6', name_ku: 'سیرامیک کۆتینگ (ساڵانە)', name_en: 'Ceramic Coating (1-Year)', price: 350000 },
-      { id: 's7', name_ku: 'دیتیلینی ناوەوە و پاککردنی کوشن', name_en: 'Interior Deep Detailing', price: 90000 },
-      { id: 's8', name_ku: 'شەفافکردنەوەی لایت', name_en: 'Headlight Restoration', price: 30000 }
     ];
 
-    // Local in-memory store synchronized with LocalStorage
-    let db = {
-      customers: JSON.parse(localStorage.getItem('awena_customers')) || [
-        { id: 'c1', name: 'سۆران ئەحمەد', phone: '07501234567', whatsapp: '9647501234567', address: 'هەڵەبجە - شەقامی گشتی', date: '2026-03-10' },
-        { id: 'c2', name: 'ڕێبین محمد', phone: '07709876543', whatsapp: '9647709876543', address: 'هەڵەبجە - سەرای کۆن', date: '2026-03-12' }
-      ],
-      vehicles: JSON.parse(localStorage.getItem('awena_vehicles')) || [
-        { id: 'v1', customer_id: 'c1', make: 'Toyota', model: 'Land Cruiser', year: 2023, color: 'White Pearl', plate: 'سلێمانی 21 B 8899', vin: 'JTMHY7AJ4', notes: 'بۆیاخی بیلادیە، چەند کڕانێکی کەمی هەیە' },
-        { id: 'v2', customer_id: 'c2', make: 'BMW', model: '520i', year: 2021, color: 'Black Sapphire', plate: 'هەولێر 22 C 4501', vin: 'WBA5A5C5', notes: 'پێویستی بە سڕینەوەی سوێرل و مەرەکەبی ڕەشە' }
-      ],
-      jobs: JSON.parse(localStorage.getItem('awena_jobs')) || [
-        {
-          id: 'job-101',
-          jobNumber: 101,
-          customer_id: 'c1',
-          vehicle_id: 'v1',
-          status: 'polishing',
-          services: ['Two-Step Paint Correction', 'Ceramic Coating (1-Year)'],
-          totalPrice: 500000,
-          discount: 25000,
-          finalAmount: 475000,
-          amountPaid: 300000,
-          currency: 'IQD',
-          paymentMethod: 'Cash',
-          receivedDate: '2026-03-27',
-          photos: {
-            before: ['https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=600&q=80'],
-            after: ['https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=600&q=80']
-          },
-          notes: 'موشتەری داوای گرەنتی لەسەر هایدرۆفۆبیکی سیرامیکەکە دەکات'
-        }
-      ],
-      portfolio: JSON.parse(localStorage.getItem('awena_portfolio')) || [
-        {
-          id: 'p1',
-          vehicle: 'Toyota Land Cruiser 2023',
-          service: 'تەعدیلی دوو قۆناغ + سیرامیک کۆتینگ',
-          before: 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=600&q=80',
-          after: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=600&q=80',
-          desc: 'لابردنی ۹۵٪ ی کڕانی قووڵ و بریقەدارکردنی ڕەنگی سپی مرواری'
-        }
-      ]
-    };
+    let currentPhotoTarget = { pairIndex: null, type: null }; // بۆ دیاریکردنی ئەوەی وێنە بۆ کام خانەیە دەڕوات
+    let activePairsCount = 0;
 
-    function persistLocal() {
-      localStorage.setItem('awena_customers', JSON.stringify(db.customers));
-      localStorage.setItem('awena_vehicles', JSON.stringify(db.vehicles));
-      localStorage.setItem('awena_jobs', JSON.stringify(db.jobs));
-      localStorage.setItem('awena_portfolio', JSON.stringify(db.portfolio));
+    function saveToLocal() {
+      localStorage.setItem('awena_cars_db', JSON.stringify(carsDb));
+      updateStats();
+      renderCarsList();
+      renderShowcase();
     }
 
-    /* =====================================================================
-       LANGUAGE & TRANSLATION CONTROLLER
-       ===================================================================== */
-    function setLanguage(lang) {
-      currentLang = lang;
-      localStorage.setItem('awena_lang', lang);
-      document.documentElement.lang = lang;
-      document.documentElement.dir = I18N[lang].dir;
-      document.getElementById('langLabel').innerText = lang === 'ckb' ? 'English' : 'کوردی';
-      document.getElementById('headerSubtitle').innerText = I18N[lang].subtitle;
+    /* گۆڕینی دۆخ لە نێوان (ئەرشیفی شوێنکار) و (پۆرتفۆلیۆی کڕیار) */
+    function toggleAppMode(forceMode = null) {
+      const workshopView = document.getElementById('workshopView');
+      const showcaseView = document.getElementById('showcaseView');
+      const modeBtnLabel = document.getElementById('modeSwitchLabel');
 
-      // Update static data attributes
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (I18N[lang][key]) el.innerText = I18N[lang][key];
-      });
+      const isShowcase = forceMode === 'showcase' || workshopView.classList.contains('hidden') === false;
 
-      renderCurrentTab();
-    }
-
-    function toggleLanguage() {
-      setLanguage(currentLang === 'ckb' ? 'en' : 'ckb');
-    }
-
-    /* =====================================================================
-       NAVIGATION CONTROLLER
-       ===================================================================== */
-    function switchTab(tabId) {
-      currentTab = tabId;
-      document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('text-brand-400');
-        btn.classList.add('text-slate-400');
-      });
-      const activeBtn = document.getElementById(`nav-${tabId}`);
-      if (activeBtn) {
-        activeBtn.classList.remove('text-slate-400');
-        activeBtn.classList.add('text-brand-400');
+      if (isShowcase && forceMode !== 'workshop') {
+        workshopView.classList.add('hidden');
+        showcaseView.classList.remove('hidden');
+        modeBtnLabel.innerText = 'ئەرشیفی شوێنکار';
+      } else {
+        showcaseView.classList.add('hidden');
+        workshopView.classList.remove('hidden');
+        modeBtnLabel.innerText = 'نیشاندانی کڕیار';
       }
-      renderCurrentTab();
-    }
-
-    function renderCurrentTab() {
-      const container = document.getElementById('appContent');
-      if (currentTab === 'dashboard') renderDashboard(container);
-      else if (currentTab === 'jobs') renderJobs(container);
-      else if (currentTab === 'customers') renderCustomers(container);
-      else if (currentTab === 'portfolio') renderPortfolio(container);
-      else if (currentTab === 'finance') renderFinance(container);
       lucide.createIcons();
     }
 
-    /* =====================================================================
-       1. DASHBOARD VIEW
-       ===================================================================== */
-    function renderDashboard(container) {
-      const t = I18N[currentLang];
-      
-      const totalCustomers = db.customers.length;
-      const totalVehicles = db.vehicles.length;
-      const activeJobs = db.jobs.filter(j => !['completed', 'delivered', 'cancelled'].includes(j.status)).length;
-      const completedJobs = db.jobs.filter(j => j.status === 'completed' || j.status === 'delivered').length;
-      
-      let totalRevenue = 0;
-      let totalUnpaid = 0;
-      db.jobs.forEach(j => {
-        totalRevenue += (j.amountPaid || 0);
-        totalUnpaid += Math.max(0, (j.finalAmount - (j.amountPaid || 0)));
-      });
-
-      container.innerHTML = `
-        <!-- Metrics Grid -->
-        <div class="grid grid-cols-2 gap-3">
-          <div class="bg-brand-card p-3.5 rounded-2xl border border-brand-border shadow-sm">
-            <div class="flex items-center justify-between text-slate-400 mb-2">
-              <span class="text-xs">${t.active_jobs}</span>
-              <i data-lucide="activity" class="w-4 h-4 text-amber-400"></i>
-            </div>
-            <div class="text-2xl font-black text-amber-400">${activeJobs}</div>
-            <span class="text-[10px] text-slate-500">${completedJobs} ${t.completed_jobs}</span>
-          </div>
-
-          <div class="bg-brand-card p-3.5 rounded-2xl border border-brand-border shadow-sm">
-            <div class="flex items-center justify-between text-slate-400 mb-2">
-              <span class="text-xs">${t.unpaid_balances}</span>
-              <i data-lucide="alert-circle" class="w-4 h-4 text-rose-400"></i>
-            </div>
-            <div class="text-xl font-black text-rose-400">${totalUnpaid.toLocaleString()} <span class="text-xs">${t.iqd}</span></div>
-            <span class="text-[10px] text-slate-500">${totalRevenue.toLocaleString()} ${t.iqd} داهات</span>
-          </div>
-
-          <div class="bg-brand-card p-3 rounded-xl border border-brand-border flex items-center justify-between">
-            <div>
-              <span class="text-[11px] text-slate-400 block">${t.total_customers}</span>
-              <span class="text-lg font-bold">${totalCustomers}</span>
-            </div>
-            <i data-lucide="users" class="w-5 h-5 text-sky-400"></i>
-          </div>
-
-          <div class="bg-brand-card p-3 rounded-xl border border-brand-border flex items-center justify-between">
-            <div>
-              <span class="text-[11px] text-slate-400 block">${t.total_vehicles}</span>
-              <span class="text-lg font-bold">${totalVehicles}</span>
-            </div>
-            <i data-lucide="car" class="w-5 h-5 text-indigo-400"></i>
-          </div>
-        </div>
-
-        <!-- Quick Action Buttons -->
-        <div class="bg-brand-card p-3.5 rounded-2xl border border-brand-border space-y-2">
-          <span class="text-xs font-semibold text-slate-400 block">${t.quick_actions}</span>
-          <div class="grid grid-cols-2 gap-2">
-            <button onclick="openNewJobModal()" class="flex items-center justify-center gap-2 py-3 px-4 bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-sky-600/30 transition">
-              <i data-lucide="plus-circle" class="w-4 h-4"></i>
-              <span>${t.new_job}</span>
-            </button>
-            <button onclick="openNewCustomerModal()" class="flex items-center justify-center gap-2 py-3 px-4 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl border border-brand-border transition">
-              <i data-lucide="user-plus" class="w-4 h-4"></i>
-              <span>${t.new_customer}</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Fast Search Bar -->
-        <div class="relative">
-          <i data-lucide="search" class="w-4 h-4 absolute top-3.5 start-3 text-slate-400"></i>
-          <input type="text" oninput="handleUniversalSearch(this.value)" placeholder="${t.search_placeholder}" 
-                 class="w-full bg-brand-card border border-brand-border rounded-xl py-2.5 ps-9 pe-4 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500">
-        </div>
-
-        <!-- Recent Detailing Jobs -->
-        <div class="space-y-2">
-          <div class="flex items-center justify-between px-1">
-            <h2 class="text-xs font-bold text-slate-300">دوایین کارەکان (Recent Jobs)</h2>
-            <button onclick="switchTab('jobs')" class="text-[11px] text-brand-400 hover:underline">بینینی هەمووی</button>
-          </div>
-          <div class="space-y-2.5" id="dashboardJobsList">
-            ${renderJobsListSnippet(db.jobs.slice(-5).reverse())}
-          </div>
-        </div>
-      `;
+    /* ئامارەکان */
+    function updateStats() {
+      document.getElementById('statTotalCars').innerText = carsDb.length;
+      let totalRevenue = carsDb.reduce((acc, car) => acc + (parseFloat(car.pricePaid) || 0), 0);
+      document.getElementById('statTotalRevenue').innerHTML = `${totalRevenue.toLocaleString()} <span class="text-[10px]">د.ع</span>`;
     }
 
-    /* Helper: Render List of Jobs */
-    function renderJobsListSnippet(jobsList) {
-      const t = I18N[currentLang];
-      if (jobsList.length === 0) {
-        return `<p class="text-xs text-slate-500 text-center py-4">هیچ کارێک تۆمار نەکراوە</p>`;
-      }
-      return jobsList.map(job => {
-        const customer = db.customers.find(c => c.id === job.customer_id) || { name: 'نەزانراو', phone: '' };
-        const vehicle = db.vehicles.find(v => v.id === job.vehicle_id) || { make: '', model: '', plate: '' };
-        const remaining = (job.finalAmount || 0) - (job.amountPaid || 0);
+    /* پیشاندانی سەیارەکان لەناو ئەرشیفی شوێنکار */
+    function renderCarsList(filtered = null) {
+      const container = document.getElementById('carsListContainer');
+      const list = filtered || carsDb;
 
-        return `
-          <div onclick="openJobDetail('${job.id}')" class="bg-brand-card p-3 rounded-xl border border-brand-border active:scale-[0.98] transition cursor-pointer">
-            <div class="flex items-start justify-between">
-              <div>
-                <span class="text-[10px] font-mono text-brand-400 bg-brand-900/40 px-1.5 py-0.5 rounded">#JOB-${job.jobNumber}</span>
-                <h3 class="font-bold text-sm text-white mt-1">${vehicle.make} ${vehicle.model}</h3>
-                <p class="text-xs text-slate-400">${customer.name} • <span class="font-mono text-[11px]">${vehicle.plate}</span></p>
-              </div>
-              <span class="text-[10px] px-2 py-0.5 rounded-full font-semibold ${getStatusBadgeColor(job.status)}">
-                ${t['status_' + job.status] || job.status}
-              </span>
-            </div>
-            
-            <div class="mt-2.5 pt-2 border-t border-brand-border/60 flex items-center justify-between text-xs">
-              <span class="text-slate-400">${job.services ? job.services[0] : 'Detailing'}</span>
-              <div class="font-bold">
-                ${remaining > 0 
-                  ? `<span class="text-rose-400">${remaining.toLocaleString()} ${t.iqd} ${t.remaining}</span>` 
-                  : `<span class="text-emerald-400">پارەدراوە ✓</span>`}
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function getStatusBadgeColor(status) {
-      switch(status) {
-        case 'polishing': return 'bg-amber-500/20 text-amber-400 border border-amber-500/30';
-        case 'completed': return 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
-        case 'delivered': return 'bg-sky-500/20 text-sky-400 border border-sky-500/30';
-        case 'received': return 'bg-blue-500/20 text-blue-400 border border-blue-500/30';
-        case 'cancelled': return 'bg-rose-500/20 text-rose-400 border border-rose-500/30';
-        default: return 'bg-slate-700 text-slate-300';
-      }
-    }
-
-    /* =====================================================================
-       2. JOBS VIEW & DETAIL
-       ===================================================================== */
-    function renderJobs(container) {
-      const t = I18N[currentLang];
-      container.innerHTML = `
-        <div class="flex items-center justify-between mb-3">
-          <h2 class="text-base font-bold text-white">${t.nav_jobs}</h2>
-          <button onclick="openNewJobModal()" class="py-1.5 px-3 bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 shadow">
-            <i data-lucide="plus" class="w-4 h-4"></i>
-            <span>${t.new_job}</span>
-          </button>
-        </div>
-        
-        <!-- Filter Pills -->
-        <div class="flex gap-1.5 overflow-x-auto pb-1 hide-scrollbar text-xs">
-          <button onclick="filterJobs('all')" class="px-3 py-1 bg-brand-600 text-white rounded-lg whitespace-nowrap">هەمووی</button>
-          <button onclick="filterJobs('polishing')" class="px-3 py-1 bg-brand-card border border-brand-border text-slate-300 rounded-lg whitespace-nowrap">پۆڵیش دەکرێت</button>
-          <button onclick="filterJobs('completed')" class="px-3 py-1 bg-brand-card border border-brand-border text-slate-300 rounded-lg whitespace-nowrap">تەواوبوو</button>
-          <button onclick="filterJobs('unpaid')" class="px-3 py-1 bg-brand-card border border-brand-border text-slate-300 rounded-lg whitespace-nowrap">قەرزارەکان</button>
-        </div>
-
-        <div class="space-y-2 mt-3" id="allJobsContainer">
-          ${renderJobsListSnippet(db.jobs)}
-        </div>
-      `;
-    }
-
-    /* Detail Modal for a Specific Detailing Job */
-    function openJobDetail(jobId) {
-      const t = I18N[currentLang];
-      const job = db.jobs.find(j => j.id === jobId);
-      if (!job) return;
-
-      const customer = db.customers.find(c => c.id === job.customer_id) || { name: '', phone: '', whatsapp: '' };
-      const vehicle = db.vehicles.find(v => v.id === job.vehicle_id) || { make: '', model: '', year: '', plate: '', color: '' };
-      const remaining = (job.finalAmount || 0) - (job.amountPaid || 0);
-
-      const modal = document.getElementById('appModal');
-      const container = document.getElementById('modalContainer');
-
-      container.innerHTML = `
-        <div class="flex items-center justify-between border-b border-brand-border pb-3">
-          <div>
-            <span class="text-[10px] font-mono text-brand-400 bg-brand-900/40 px-1.5 py-0.5 rounded">#JOB-${job.jobNumber}</span>
-            <h3 class="font-extrabold text-base text-white mt-0.5">${vehicle.make} ${vehicle.model} (${vehicle.year})</h3>
-          </div>
-          <button onclick="closeModal()" class="text-slate-400 hover:text-white p-1">
-            <i data-lucide="x" class="w-5 h-5"></i>
-          </button>
-        </div>
-
-        <!-- Vehicle & Customer Quick Card -->
-        <div class="bg-slate-900/60 p-3 rounded-xl border border-brand-border space-y-1 text-xs">
-          <div class="flex justify-between"><span class="text-slate-400">${t.customer_name}:</span> <span class="font-bold text-white">${customer.name}</span></div>
-          <div class="flex justify-between"><span class="text-slate-400">${t.phone}:</span> <a href="tel:${customer.phone}" class="font-mono text-brand-400 dir-ltr">${customer.phone}</a></div>
-          <div class="flex justify-between"><span class="text-slate-400">${t.plate}:</span> <span class="font-mono bg-slate-800 px-1.5 py-0.5 rounded text-white">${vehicle.plate}</span></div>
-          <div class="flex justify-between"><span class="text-slate-400">${t.color}:</span> <span class="text-slate-200">${vehicle.color}</span></div>
-        </div>
-
-        <!-- Job Status Selector -->
-        <div class="space-y-1">
-          <label class="text-xs text-slate-400 font-semibold">دۆخی کار (Status)</label>
-          <select onchange="updateJobStatus('${job.id}', this.value)" class="w-full bg-slate-800 border border-brand-border rounded-xl p-2.5 text-xs text-white focus:outline-none">
-            <option value="appointment" ${job.status === 'appointment' ? 'selected' : ''}>1. نۆرە گیراوە (Appointment)</option>
-            <option value="received" ${job.status === 'received' ? 'selected' : ''}>2. وەرگیرا لە شوێنکار (Vehicle Received)</option>
-            <option value="inspection" ${job.status === 'inspection' ? 'selected' : ''}>3. پشکنینی ڕەوش (Inspection)</option>
-            <option value="washing_prep" ${job.status === 'washing_prep' ? 'selected' : ''}>4. شتن و ئامادەکاری (Washing & Prep)</option>
-            <option value="paint_inspection" ${job.status === 'paint_inspection' ? 'selected' : ''}>5. پشکنینی وردی بۆیاخ (Paint Inspection)</option>
-            <option value="polishing" ${job.status === 'polishing' ? 'selected' : ''}>6. دەستکرا بە پۆڵیش (Polishing)</option>
-            <option value="finishing_qc" ${job.status === 'finishing_qc' ? 'selected' : ''}>7. کۆتایی و کوالێتی کۆنتڕۆڵ (Finishing & QC)</option>
-            <option value="completed" ${job.status === 'completed' ? 'selected' : ''}>8. تەواوبوو (Completed)</option>
-            <option value="delivered" ${job.status === 'delivered' ? 'selected' : ''}>9. ڕادەستی خاوەنی کرایەوە (Delivered)</option>
-            <option value="cancelled" ${job.status === 'cancelled' ? 'selected' : ''}>10. هەڵوەشێنراوەتەوە (Cancelled)</option>
-          </select>
-        </div>
-
-        <!-- Before & After Interactive Comparison -->
-        <div class="space-y-1.5">
-          <label class="text-xs text-slate-300 font-semibold flex items-center justify-between">
-            <span>وێنەکانی پێش و پاش (Before / After)</span>
-            <button onclick="triggerPhotoCapture('${job.id}')" class="text-[11px] text-brand-400 flex items-center gap-1">
-              <i data-lucide="camera" class="w-3.5 h-3.5"></i> ${t.take_photo}
-            </button>
-          </label>
-          
-          ${job.photos && job.photos.before && job.photos.after ? `
-            <div class="slider-comparison-container h-48 rounded-xl border border-brand-border bg-black relative">
-              <img src="${job.photos.after[0]}" class="w-full h-full object-cover">
-              <div id="beforeOverlay" class="slider-overlay-img overflow-hidden" style="width: 50%;">
-                <img src="${job.photos.before[0]}" class="w-full h-full object-cover" style="width: calc(100vw - 32px); max-width: 414px;">
-              </div>
-              <input type="range" min="0" max="100" value="50" oninput="document.getElementById('beforeOverlay').style.width = this.value + '%'" 
-                     class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize">
-              <span class="absolute bottom-2 start-2 text-[9px] bg-black/70 px-1.5 py-0.5 rounded text-white pointer-events-none">پێش کار (Before)</span>
-              <span class="absolute bottom-2 end-2 text-[9px] bg-sky-600/80 px-1.5 py-0.5 rounded text-white pointer-events-none">دوای کار (After)</span>
-            </div>
-          ` : `
-            <div class="border border-dashed border-brand-border rounded-xl p-4 text-center text-xs text-slate-500">
-              هیچ وێنەیەک بارنەکراوە. دوگمەی کامێرا دابگرە بۆ زیادکردن.
-            </div>
-          `}
-        </div>
-
-        <!-- Financial Summary & WhatsApp Receipt Generator -->
-        <div class="bg-slate-900/80 p-3 rounded-xl border border-brand-border space-y-2 text-xs">
-          <div class="flex justify-between text-slate-400"><span>${t.total_price}:</span> <span>${(job.totalPrice || 0).toLocaleString()} ${t.iqd}</span></div>
-          <div class="flex justify-between text-slate-400"><span>داشکاندن (Discount):</span> <span>${(job.discount || 0).toLocaleString()} ${t.iqd}</span></div>
-          <div class="flex justify-between font-bold text-white border-t border-slate-800 pt-1">
-            <span>کۆی گشتی:</span> <span>${(job.finalAmount || 0).toLocaleString()} ${t.iqd}</span>
-          </div>
-          <div class="flex justify-between text-emerald-400 font-bold">
-            <span>${t.paid}:</span> <span>${(job.amountPaid || 0).toLocaleString()} ${t.iqd}</span>
-          </div>
-          <div class="flex justify-between font-black text-rose-400 border-t border-slate-800 pt-1">
-            <span>${t.remaining}:</span> <span>${remaining.toLocaleString()} ${t.iqd}</span>
-          </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="space-y-2 pt-2">
-          <button onclick="shareWhatsAppReceipt('${job.id}')" class="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-700/20">
-            <i data-lucide="message-circle" class="w-4 h-4"></i>
-            <span>${t.whatsapp_share}</span>
-          </button>
-          
-          <button onclick="publishToPortfolioModal('${job.id}')" class="w-full py-2 px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs rounded-xl border border-brand-border flex items-center justify-center gap-2">
-            <i data-lucide="share-2" class="w-4 h-4"></i>
-            <span>${t.publish_portfolio}</span>
-          </button>
-        </div>
-      `;
-
-      modal.classList.remove('hidden');
-      lucide.createIcons();
-    }
-
-    function updateJobStatus(jobId, newStatus) {
-      const job = db.jobs.find(j => j.id === jobId);
-      if (job) {
-        job.status = newStatus;
-        persistLocal();
-        renderCurrentTab();
-      }
-    }
-
-    /* WhatsApp Direct Receipt Generator (In Kurdish with Car Details) */
-    function shareWhatsAppReceipt(jobId) {
-      const job = db.jobs.find(j => j.id === jobId);
-      if (!job) return;
-      const customer = db.customers.find(c => c.id === job.customer_id);
-      const vehicle = db.vehicles.find(v => v.id === job.vehicle_id);
-      const remaining = (job.finalAmount || 0) - (job.amountPaid || 0);
-
-      const message = `*پسوڵەی فەرمی جوانکاری ئۆتۆمبێلی AWENA CAR - هەڵەبجە*
----------------------------------------
-کاک/خاتوو: ${customer ? customer.name : ''}
-ئۆتۆمبێل: ${vehicle ? vehicle.make + ' ' + vehicle.model : ''}
-تابلۆ: ${vehicle ? vehicle.plate : ''}
-ژمارەی کار: #JOB-${job.jobNumber}
-خزمەتگوزاری: ${job.services ? job.services.join('، ') : 'پۆڵیش و نانۆ سیرامیک'}
----------------------------------------
-نرخی خزمەتگوزاری: ${job.totalPrice ? job.totalPrice.toLocaleString() : 0} دینار
-داشکاندن: ${job.discount ? job.discount.toLocaleString() : 0} دینار
-کۆی گشتی: ${job.finalAmount ? job.finalAmount.toLocaleString() : 0} دینار
-بڕی دراو: ${job.amountPaid ? job.amountPaid.toLocaleString() : 0} دینار
-قەرزی ماوە: ${remaining.toLocaleString()} دینار
----------------------------------------
-سوپاس بۆ متمانەکەتان بە AWENA CAR!
-ناونیشان: هەڵەبجە - پەیوەندی: 07501234567`;
-
-      const encoded = encodeURIComponent(message);
-      const phoneClean = customer && customer.whatsapp ? customer.whatsapp.replace(/[^0-9]/g, '') : '';
-      window.open(`https://api.whatsapp.com/send?phone=${phoneClean}&text=${encoded}`, '_blank');
-    }
-
-    /* =====================================================================
-       3. CUSTOMERS & REPEAT VEHICLES MANAGEMENT
-       ===================================================================== */
-    function renderCustomers(container) {
-      const t = I18N[currentLang];
-      container.innerHTML = `
-        <div class="flex items-center justify-between mb-3">
-          <h2 class="text-base font-bold text-white">${t.nav_customers}</h2>
-          <button onclick="openNewCustomerModal()" class="py-1.5 px-3 bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 shadow">
-            <i data-lucide="user-plus" class="w-4 h-4"></i>
-            <span>${t.new_customer}</span>
-          </button>
-        </div>
-
-        <div class="space-y-2.5">
-          ${db.customers.map(c => {
-            const customerVehicles = db.vehicles.filter(v => v.customer_id === c.id);
-            return `
-              <div class="bg-brand-card p-3 rounded-xl border border-brand-border space-y-2">
-                <div class="flex items-start justify-between">
-                  <div>
-                    <h3 class="font-bold text-sm text-white">${c.name}</h3>
-                    <p class="text-xs text-brand-400 font-mono mt-0.5">${c.phone}</p>
-                    <p class="text-[11px] text-slate-500">${c.address || 'هەڵەبجە'}</p>
-                  </div>
-                  <a href="tel:${c.phone}" class="p-2 bg-slate-800 rounded-lg text-emerald-400 border border-brand-border">
-                    <i data-lucide="phone" class="w-4 h-4"></i>
-                  </a>
-                </div>
-
-                <!-- Vehicles owned by this customer -->
-                <div class="pt-2 border-t border-brand-border/60">
-                  <span class="text-[10px] text-slate-400 font-semibold block mb-1">ئۆتۆمبێلە تۆمارکراوەکان:</span>
-                  <div class="space-y-1">
-                    ${customerVehicles.map(v => `
-                      <div class="flex items-center justify-between text-xs bg-slate-900/40 px-2 py-1.5 rounded-lg border border-slate-800">
-                        <span class="font-medium text-slate-200">${v.make} ${v.model} (${v.year})</span>
-                        <span class="font-mono text-[11px] text-slate-400 bg-slate-800 px-1 rounded">${v.plate}</span>
-                      </div>
-                    `).join('')}
-                  </div>
-                </div>
-              </div>
-            `;
-          }).join('')}
-        </div>
-      `;
-    }
-
-    /* Modal for registering Customer + First Vehicle */
-    function openNewCustomerModal() {
-      const t = I18N[currentLang];
-      const modal = document.getElementById('appModal');
-      const container = document.getElementById('modalContainer');
-
-      container.innerHTML = `
-        <div class="flex items-center justify-between border-b border-brand-border pb-3">
-          <h3 class="font-bold text-base text-white">${t.new_customer} و ئۆتۆمبێل</h3>
-          <button onclick="closeModal()" class="text-slate-400 hover:text-white p-1">
-            <i data-lucide="x" class="w-5 h-5"></i>
-          </button>
-        </div>
-
-        <form onsubmit="handleCustomerSubmit(event)" class="space-y-3 text-xs">
-          <div>
-            <label class="text-slate-300 font-semibold block mb-1">${t.customer_name} *</label>
-            <input type="text" id="cust_name" required placeholder="سۆران ئەحمەد" class="w-full bg-slate-800 border border-brand-border rounded-xl p-2.5 text-white focus:outline-none focus:border-brand-500">
-          </div>
-          <div>
-            <label class="text-slate-300 font-semibold block mb-1">${t.phone} (عێراق) *</label>
-            <input type="tel" id="cust_phone" required placeholder="0750 123 4567" class="w-full bg-slate-800 border border-brand-border rounded-xl p-2.5 text-white dir-ltr text-right focus:outline-none focus:border-brand-500">
-          </div>
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <label class="text-slate-300 font-semibold block mb-1">${t.make_model} *</label>
-              <input type="text" id="veh_model" required placeholder="Toyota Land Cruiser" class="w-full bg-slate-800 border border-brand-border rounded-xl p-2.5 text-white focus:outline-none">
-            </div>
-            <div>
-              <label class="text-slate-300 font-semibold block mb-1">${t.year} *</label>
-              <input type="number" id="veh_year" required value="2023" class="w-full bg-slate-800 border border-brand-border rounded-xl p-2.5 text-white focus:outline-none">
-            </div>
-          </div>
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <label class="text-slate-300 font-semibold block mb-1">${t.plate} *</label>
-              <input type="text" id="veh_plate" required placeholder="سلێمانی 21 A 12345" class="w-full bg-slate-800 border border-brand-border rounded-xl p-2.5 text-white focus:outline-none">
-            </div>
-            <div>
-              <label class="text-slate-300 font-semibold block mb-1">${t.color} *</label>
-              <input type="text" id="veh_color" required placeholder="ڕەش" class="w-full bg-slate-800 border border-brand-border rounded-xl p-2.5 text-white focus:outline-none">
-            </div>
-          </div>
-          <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl mt-2 shadow-lg shadow-sky-600/30">
-            ${t.save}
-          </button>
-        </form>
-      `;
-
-      modal.classList.remove('hidden');
-      lucide.createIcons();
-    }
-
-    function handleCustomerSubmit(e) {
-      e.preventDefault();
-      const newCustId = 'c-' + Date.now();
-      const newVehId = 'v-' + Date.now();
-
-      const newCustomer = {
-        id: newCustId,
-        name: document.getElementById('cust_name').value,
-        phone: document.getElementById('cust_phone').value,
-        whatsapp: '964' + document.getElementById('cust_phone').value.replace(/^0+/, ''),
-        address: 'هەڵەبجە',
-        date: new Date().toISOString().split('T')[0]
-      };
-
-      const newVehicle = {
-        id: newVehId,
-        customer_id: newCustId,
-        make: document.getElementById('veh_model').value.split(' ')[0] || 'ئۆتۆمبێل',
-        model: document.getElementById('veh_model').value,
-        year: parseInt(document.getElementById('veh_year').value) || 2024,
-        plate: document.getElementById('veh_plate').value,
-        color: document.getElementById('veh_color').value
-      };
-
-      db.customers.unshift(newCustomer);
-      db.vehicles.unshift(newVehicle);
-      persistLocal();
-      closeModal();
-      renderCurrentTab();
-    }
-
-    /* Modal for Creating a New Job */
-    function openNewJobModal() {
-      const t = I18N[currentLang];
-      const modal = document.getElementById('appModal');
-      const container = document.getElementById('modalContainer');
-
-      container.innerHTML = `
-        <div class="flex items-center justify-between border-b border-brand-border pb-3">
-          <h3 class="font-bold text-base text-white">${t.new_job}</h3>
-          <button onclick="closeModal()" class="text-slate-400 hover:text-white p-1">
-            <i data-lucide="x" class="w-5 h-5"></i>
-          </button>
-        </div>
-
-        <form onsubmit="handleNewJobSubmit(event)" class="space-y-3 text-xs">
-          <div>
-            <label class="text-slate-300 font-semibold block mb-1">هەڵبژاردنی ئۆتۆمبێل و موشتەری *</label>
-            <select id="new_job_veh" required class="w-full bg-slate-800 border border-brand-border rounded-xl p-2.5 text-white focus:outline-none">
-              ${db.vehicles.map(v => {
-                const c = db.customers.find(cust => cust.id === v.customer_id);
-                return `<option value="${v.id}">${v.make} ${v.model} (${v.plate}) - ${c ? c.name : ''}</option>`;
-              }).join('')}
-            </select>
-          </div>
-
-          <div>
-            <label class="text-slate-300 font-semibold block mb-1.5">خزمەتگوزارییە داواکراوەکان *</label>
-            <div class="space-y-1.5 max-h-36 overflow-y-auto bg-slate-900/60 p-2 rounded-xl border border-brand-border">
-              ${DEFAULT_SERVICES.map(s => `
-                <label class="flex items-center justify-between p-1 hover:bg-slate-800 rounded cursor-pointer">
-                  <div class="flex items-center gap-2">
-                    <input type="checkbox" name="services" value="${s.name_en}" data-price="${s.price}" onchange="recalculateJobFormTotal()" class="rounded border-slate-700 bg-slate-800 text-brand-500">
-                    <span class="text-slate-200">${currentLang === 'ckb' ? s.name_ku : s.name_en}</span>
-                  </div>
-                  <span class="text-slate-400 font-mono">${s.price.toLocaleString()}</span>
-                </label>
-              `).join('')}
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <label class="text-slate-300 font-semibold block mb-1">کۆی خزمەتگوزاری (${t.iqd})</label>
-              <input type="number" id="job_calc_price" value="0" readonly class="w-full bg-slate-900 border border-brand-border rounded-xl p-2.5 text-white font-bold">
-            </div>
-            <div>
-              <label class="text-slate-300 font-semibold block mb-1">داشکاندن (${t.iqd})</label>
-              <input type="number" id="job_discount" value="0" oninput="recalculateJobFormTotal()" class="w-full bg-slate-800 border border-brand-border rounded-xl p-2.5 text-white focus:outline-none">
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <label class="text-slate-300 font-semibold block mb-1">${t.paid} (${t.iqd}) *</label>
-              <input type="number" id="job_paid" value="0" required class="w-full bg-slate-800 border border-brand-border rounded-xl p-2.5 text-emerald-400 font-bold focus:outline-none">
-            </div>
-            <div>
-              <label class="text-slate-300 font-semibold block mb-1">شێوازی پارەدان</label>
-              <select id="job_payment_type" class="w-full bg-slate-800 border border-brand-border rounded-xl p-2.5 text-white focus:outline-none">
-                <option value="Cash">کاش (Cash)</option>
-                <option value="FIB">بانکی FIB</option>
-                <option value="FastPay">FastPay</option>
-                <option value="ZainCash">ZainCash</option>
-              </select>
-            </div>
-          </div>
-
-          <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl mt-2 shadow-lg shadow-sky-600/30">
-            تۆمارکردنی کار و دەستپێکردن
-          </button>
-        </form>
-      `;
-
-      modal.classList.remove('hidden');
-      lucide.createIcons();
-    }
-
-    function recalculateJobFormTotal() {
-      let sum = 0;
-      document.querySelectorAll('input[name="services"]:checked').forEach(cb => {
-        sum += parseFloat(cb.getAttribute('data-price')) || 0;
-      });
-      document.getElementById('job_calc_price').value = sum;
-    }
-
-    function handleNewJobSubmit(e) {
-      e.preventDefault();
-      const vehId = document.getElementById('new_job_veh').value;
-      const vehicle = db.vehicles.find(v => v.id === vehId);
-      if (!vehicle) return;
-
-      const selectedServices = [];
-      document.querySelectorAll('input[name="services"]:checked').forEach(cb => {
-        selectedServices.push(cb.value);
-      });
-
-      const totalPrice = parseFloat(document.getElementById('job_calc_price').value) || 0;
-      const discount = parseFloat(document.getElementById('job_discount').value) || 0;
-      const amountPaid = parseFloat(document.getElementById('job_paid').value) || 0;
-      const paymentMethod = document.getElementById('job_payment_type').value;
-
-      const newJob = {
-        id: 'job-' + Date.now(),
-        jobNumber: db.jobs.length + 101,
-        customer_id: vehicle.customer_id,
-        vehicle_id: vehId,
-        status: 'received',
-        services: selectedServices.length > 0 ? selectedServices : ['Detailing Service'],
-        totalPrice: totalPrice,
-        discount: discount,
-        finalAmount: totalPrice - discount,
-        amountPaid: amountPaid,
-        currency: 'IQD',
-        paymentMethod: paymentMethod,
-        receivedDate: new Date().toISOString().split('T')[0],
-        photos: { before: [], after: [] }
-      };
-
-      db.jobs.unshift(newJob);
-      persistLocal();
-      closeModal();
-      switchTab('jobs');
-    }
-
-    /* =====================================================================
-       4. PUBLIC PORTFOLIO SHOWCASE
-       ===================================================================== */
-    function renderPortfolio(container) {
-      const t = I18N[currentLang];
-      container.innerHTML = `
-        <div class="flex items-center justify-between mb-3">
-          <div>
-            <h2 class="text-base font-bold text-white">${t.nav_portfolio}</h2>
-            <p class="text-[11px] text-slate-400">کارە بڵاوکراوەکان بۆ نیشاندان بە موشتەری</p>
-          </div>
-          <span class="text-[10px] bg-brand-900/60 text-brand-400 border border-brand-500/30 px-2 py-0.5 rounded-full font-semibold">گشتی (Public)</span>
-        </div>
-
-        <div class="space-y-4">
-          ${db.portfolio.map(item => `
-            <div class="bg-brand-card rounded-2xl border border-brand-border overflow-hidden">
-              <div class="slider-comparison-container h-52 bg-black relative">
-                <img src="${item.after}" class="w-full h-full object-cover">
-                <div class="slider-overlay-img overflow-hidden" id="port-overlay-${item.id}" style="width: 50%;">
-                  <img src="${item.before}" class="w-full h-full object-cover" style="width: calc(100vw - 32px); max-width: 414px;">
-                </div>
-                <input type="range" min="0" max="100" value="50" oninput="document.getElementById('port-overlay-${item.id}').style.width = this.value + '%'" 
-                       class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize">
-                <span class="absolute bottom-2 start-2 text-[9px] bg-black/70 px-1.5 py-0.5 rounded text-white pointer-events-none">پێش کار</span>
-                <span class="absolute bottom-2 end-2 text-[9px] bg-sky-600/80 px-1.5 py-0.5 rounded text-white pointer-events-none">دوای کار</span>
-              </div>
-              <div class="p-3 space-y-1">
-                <h3 class="font-extrabold text-sm text-white">${item.vehicle}</h3>
-                <p class="text-xs text-brand-400 font-medium">${item.service}</p>
-                <p class="text-[11px] text-slate-400 pt-1">${item.desc}</p>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-      `;
-    }
-
-    /* Modal for Publishing a Job to the Public Showcase */
-    function publishToPortfolioModal(jobId) {
-      const job = db.jobs.find(j => j.id === jobId);
-      if (!job) return;
-      const vehicle = db.vehicles.find(v => v.id === job.vehicle_id);
-
-      const modal = document.getElementById('appModal');
-      const container = document.getElementById('modalContainer');
-
-      container.innerHTML = `
-        <div class="flex items-center justify-between border-b border-brand-border pb-3">
-          <h3 class="font-bold text-base text-white">بڵاوکردنەوە لە پۆرتفۆلیۆ</h3>
-          <button onclick="closeModal()" class="text-slate-400 hover:text-white p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
-        </div>
-
-        <div class="space-y-3 text-xs">
-          <div class="p-2.5 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-300 text-[11px]">
-            ⚠️ تکایە دڵنیابە لە ڕەزامەندی موشتەری و شاردنەوەی ژمارەی تابلۆ پێش بڵاوکردنەوەی وێنەکان.
-          </div>
-
-          <div>
-            <label class="text-slate-300 font-semibold block mb-1">ناونیشانی کار</label>
-            <input type="text" id="port_title" value="${vehicle ? vehicle.make + ' ' + vehicle.model : ''}" class="w-full bg-slate-800 border border-brand-border rounded-xl p-2.5 text-white">
-          </div>
-
-          <div>
-            <label class="text-slate-300 font-semibold block mb-1">شیکردنەوەی کار بە کوردی</label>
-            <textarea id="port_desc" rows="2" class="w-full bg-slate-800 border border-brand-border rounded-xl p-2 text-white">پۆڵیش و نانۆ سیرامیکی ئاست بەرز بۆ پاراستنی بۆیاخ لە شوێنکاری ئاوێنە کار - هەڵەبجە</textarea>
-          </div>
-
-          <label class="flex items-center gap-2 text-slate-200 cursor-pointer pt-1">
-            <input type="checkbox" id="port_consent" required class="rounded bg-slate-800 border-slate-700 text-brand-500">
-            <span>موشتەری ڕەزامەندی دەربڕیوە بۆ بڵاوکردنەوە</span>
-          </label>
-
-          <button onclick="confirmPublishPortfolio('${job.id}')" class="w-full py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl mt-2">
-            بڵاوکردنەوەی فەرمی
-          </button>
-        </div>
-      `;
-
-      modal.classList.remove('hidden');
-      lucide.createIcons();
-    }
-
-    function confirmPublishPortfolio(jobId) {
-      const consent = document.getElementById('port_consent').checked;
-      if (!consent) {
-        alert('تکایە پێشوەختە ڕەزامەندی موشتەری پشتڕاست بکەرەوە');
+      if (list.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">هیچ سەیارەیەک نەدۆزرایەوە</p>`;
         return;
       }
-      const job = db.jobs.find(j => j.id === jobId);
-      const vehicle = db.vehicles.find(v => v.id === job.vehicle_id);
 
-      db.portfolio.unshift({
-        id: 'port-' + Date.now(),
-        vehicle: document.getElementById('port_title').value,
-        service: job.services ? job.services[0] : 'Detailing',
-        before: job.photos && job.photos.before && job.photos.before[0] ? job.photos.before[0] : 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=600&q=80',
-        after: job.photos && job.photos.after && job.photos.after[0] ? job.photos.after[0] : 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=600&q=80',
-        desc: document.getElementById('port_desc').value
-      });
-
-      persistLocal();
-      closeModal();
-      switchTab('portfolio');
-    }
-
-    /* =====================================================================
-       5. FINANCIAL MANAGEMENT VIEW & BACKUP EXPORTER
-       ===================================================================== */
-    function renderFinance(container) {
-      const t = I18N[currentLang];
-      let totalRevenue = 0;
-      let totalUnpaid = 0;
-      let totalDiscount = 0;
-
-      db.jobs.forEach(j => {
-        totalRevenue += (j.amountPaid || 0);
-        totalDiscount += (j.discount || 0);
-        totalUnpaid += Math.max(0, ((j.finalAmount || 0) - (j.amountPaid || 0)));
-      });
-
-      container.innerHTML = `
-        <h2 class="text-base font-bold text-white mb-3">${t.nav_finance}</h2>
-
-        <div class="bg-brand-card p-4 rounded-2xl border border-brand-border space-y-3">
-          <div class="flex justify-between items-center text-xs">
-            <span class="text-slate-400">داهاتی کۆکراوە (Cash Received):</span>
-            <span class="font-black text-emerald-400 text-sm">${totalRevenue.toLocaleString()} ${t.iqd}</span>
+      container.innerHTML = list.map(car => `
+        <div class="bg-brand-card p-3 rounded-2xl border border-brand-border space-y-2.5">
+          <div class="flex items-start justify-between">
+            <div>
+              <h3 class="font-bold text-sm text-white">${car.makeModel} (${car.year})</h3>
+              <p class="text-xs text-slate-400">${car.customerName} • <span class="font-mono text-brand-400 dir-ltr">${car.customerPhone}</span></p>
+              <div class="flex items-center gap-1.5 mt-1 text-[11px] text-slate-400">
+                <span class="bg-slate-800 px-1.5 py-0.5 rounded font-mono text-slate-300">${car.plate}</span>
+                <span>• ${car.color}</span>
+              </div>
+            </div>
+            <div class="text-end">
+              <span class="text-xs font-black text-emerald-400 block">${(car.pricePaid || 0).toLocaleString()} د.ع</span>
+              <span class="text-[10px] text-slate-500">${car.photos ? car.photos.length : 0} جووتە وێنە</span>
+            </div>
           </div>
-          <div class="flex justify-between items-center text-xs">
-            <span class="text-slate-400">قەرزی لای موشتەری (Outstanding):</span>
-            <span class="font-black text-rose-400 text-sm">${totalUnpaid.toLocaleString()} ${t.iqd}</span>
+
+          <div class="p-2 bg-slate-900/70 rounded-xl text-xs text-slate-300 border border-brand-border/60">
+            <span class="text-brand-400 font-semibold">ئیش:</span> ${car.services}
           </div>
-          <div class="flex justify-between items-center text-xs">
-            <span class="text-slate-400">سەرجەم داشکاندنەکان:</span>
-            <span class="font-bold text-slate-300 text-xs">${totalDiscount.toLocaleString()} ${t.iqd}</span>
-          </div>
-        </div>
 
-        <!-- Data Safety & Offline Backups -->
-        <div class="bg-brand-card p-4 rounded-2xl border border-brand-border space-y-3 mt-4">
-          <div class="flex items-center gap-2">
-            <i data-lucide="shield-check" class="w-5 h-5 text-sky-400"></i>
-            <h3 class="text-xs font-bold text-white">پاراستن و هەناردەکردنی داتا (Backup & Export)</h3>
-          </div>
-          <p class="text-[11px] text-slate-400">هەموو زانیارییەکان لە ناو مۆبایلەکەتدا دەپارێزرێن. دەتوانیت فایلی یەدەگ (JSON) داگرێت بۆ پاراستنی دەستی.</p>
-
-          <div class="grid grid-cols-2 gap-2 pt-1">
-            <button onclick="exportDataBackup()" class="py-2.5 px-3 bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow">
-              <i data-lucide="download" class="w-4 h-4"></i>
-              <span>داگرتنی بەکئەپ</span>
-            </button>
-            <label class="py-2.5 px-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl border border-brand-border flex items-center justify-center gap-1.5 cursor-pointer">
-              <i data-lucide="upload" class="w-4 h-4"></i>
-              <span>گەڕاندنەوە</span>
-              <input type="file" accept=".json" onchange="importDataBackup(event)" class="hidden">
-            </label>
-          </div>
-        </div>
-      `;
-    }
-
-    /* Backup Exporter: JSON with structured relational snapshot */
-    function exportDataBackup() {
-      const backupData = {
-        app: "AWENA CAR Auto Detailing",
-        version: "1.2",
-        exportedAt: new Date().toISOString(),
-        location: "Halabja, Kurdistan Region, Iraq",
-        database: db
-      };
-
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `AWENA_CAR_BACKUP_${new Date().toISOString().split('T')[0]}.json`);
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-    }
-
-    /* Backup Importer with Validation */
-    function importDataBackup(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const imported = JSON.parse(e.target.result);
-          if (imported.database && imported.database.jobs) {
-            db = imported.database;
-            persistLocal();
-            alert('داتاکان بە سەرکەوتوویی گەڕێنرانەوە!');
-            renderCurrentTab();
-          } else {
-            alert('فایلەکە هەڵەیە یان فۆرماتیگونجاو نییە.');
-          }
-        } catch(err) {
-          alert('هەڵە لە خوێندنەوەی فایلەکە: ' + err.message);
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    /* Universal Fast Search (Plates, Names, Phones) */
-    function handleUniversalSearch(query) {
-      if (!query.trim()) {
-        renderCurrentTab();
-        return;
-      }
-      const q = query.toLowerCase().trim();
-      const matchedJobs = db.jobs.filter(job => {
-        const cust = db.customers.find(c => c.id === job.customer_id);
-        const veh = db.vehicles.find(v => v.id === job.vehicle_id);
-        return (
-          (veh && veh.plate.toLowerCase().includes(q)) ||
-          (veh && (veh.make + ' ' + veh.model).toLowerCase().includes(q)) ||
-          (cust && cust.name.toLowerCase().includes(q)) ||
-          (cust && cust.phone.includes(q)) ||
-          String(job.jobNumber).includes(q)
-        );
-      });
-
-      const listContainer = document.getElementById('dashboardJobsList') || document.getElementById('allJobsContainer');
-      if (listContainer) {
-        listContainer.innerHTML = renderJobsListSnippet(matchedJobs);
-      }
-    }
-
-    /* Camera Capture Trigger */
-    function triggerPhotoCapture(jobId) {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = 'image/*';
-      input.capture = 'environment'; // Android Hardware Camera Direct
-      input.onchange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = (event) => {
-            const job = db.jobs.find(j => j.id === jobId);
-            if (job) {
-              if (!job.photos) job.photos = { before: [], after: [] };
-              job.photos.after = [event.target.result];
-              persistLocal();
-              openJobDetail(jobId);
-            }
-          };
-          reader.readAsDataURL(file);
-        }
-      };
-      input.click();
-    }
-
-    function closeModal() {
-      document.getElementById('appModal').classList.add('hidden');
-    }
-
-    /* PWA Service Worker Registration */
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW registration skipped:', err));
-      });
-    }
-
-    // Initialize View
-    setLanguage(currentLang);
-  </script>
-</body>
-</html>
+          <!-- پیشاندانی سڵایدەری پێش و پاش ئەگەر هەبێت -->
+          ${car.photos && car.photos.length > 0 && car.photos[0].before && car.photos[0].after ? `
+            <div class="space-y-1">
+              <span class="text-[10px] text-slate-400">${car.photos[0].title || 'پێش و پاش'}:</span>
+              <div class="slider-comparison-container h-44 rounded-xl border border-brand-border bg-black relative">
+                <img src="${car.photos[0].after}" class="w-full h-full object-cover">
+                <div class="slider-overlay-img overflow-hidden" id="car-slider-${car.id}" style="width: 50%;">
+                  <img src="${car.photos[0].before}" class="w-full h-full object-cover" style="width: calc(100vw - 48px); max-width: 400px;">
+                </div>
+                <input type="range" min="0" max="100" valu
