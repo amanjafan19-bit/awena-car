@@ -58,7 +58,7 @@
 <body class="bg-brand-dark text-slate-100 min-h-screen pb-16 select-none">
 
   <!-- ==========================================
-       1. سەرپەڕەی فەرمی (Header)
+       1. سەرپەڕە (Header)
        ========================================== -->
   <header class="sticky top-0 z-40 bg-brand-card/95 backdrop-blur border-b border-brand-border px-4 py-3 flex items-center justify-between">
     <div class="flex items-center gap-3">
@@ -74,21 +74,19 @@
       </div>
     </div>
 
-    <!-- دوگمەی گۆڕینی دۆخ (ئەرشیفی تایبەت / پۆرتفۆلیۆی کڕیار) -->
-    <div class="flex items-center gap-2">
-      <button onclick="toggleAppMode()" id="modeSwitchBtn" class="px-3 py-1.5 text-xs font-bold rounded-xl bg-slate-800 border border-brand-border text-brand-400 flex items-center gap-1.5 shadow">
-        <i data-lucide="eye" class="w-4 h-4"></i>
-        <span id="modeSwitchLabel">نیشاندانی کڕیار</span>
-      </button>
-    </div>
+    <!-- دوگمەی گۆڕینی دۆخ (ئەرشیفی شوێنکار / بینینی کڕیار) -->
+    <button onclick="toggleAppMode()" id="modeSwitchBtn" class="px-3 py-1.5 text-xs font-bold rounded-xl bg-slate-800 border border-brand-border text-brand-400 flex items-center gap-1.5 shadow">
+      <i data-lucide="eye" class="w-4 h-4"></i>
+      <span id="modeSwitchLabel">نیشاندانی کڕیار</span>
+    </button>
   </header>
 
   <!-- ==========================================
-       2. شاشەی ئەرشیفی تایبەتی شوێنکار (Workshop View)
+       2. شاشەی ئەرشیفی شوێنکار (تایبەت بۆ خۆت)
        ========================================== -->
   <main id="workshopView" class="max-w-md mx-auto p-4 space-y-4">
     
-    <!-- پوختەی ئامارەکان -->
+    <!-- ئاماری خێرا -->
     <div class="grid grid-cols-2 gap-3">
       <div class="bg-brand-card p-3 rounded-2xl border border-brand-border flex items-center justify-between">
         <div>
@@ -124,39 +122,38 @@
       </button>
     </div>
 
-    <!-- گەڕانی خێرا -->
+    <!-- خانەی گەڕان -->
     <div class="relative">
       <i data-lucide="search" class="w-4 h-4 absolute top-3.5 start-3 text-slate-400"></i>
       <input type="text" oninput="handleSearch(this.value)" placeholder="گەڕان بەپێی جۆری سەیارە، تابلۆ، یان ناوی موشتەری..." 
              class="w-full bg-brand-card border border-brand-border rounded-xl py-2.5 ps-9 pe-4 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500">
     </div>
 
-    <!-- لیستی سەیارە تۆمارکراوەکان -->
+    <!-- لیستی سەیارەکان -->
     <div class="space-y-2">
       <h2 class="text-xs font-bold text-slate-400 px-1">سەیارە تۆمارکراوەکانی شوێنکار</h2>
       <div id="carsListContainer" class="space-y-3">
-        <!-- بە شێوەی خۆکار لێرە دروست دەبێت -->
+        <!-- بە خۆکار دروست دەبێت -->
       </div>
     </div>
   </main>
 
   <!-- ==========================================
-       3. شاشەی نیشاندان بۆ کڕیار (Public Showcase View)
+       3. شاشەی نیشاندان بۆ کڕیار (Public Showcase)
        ========================================== -->
   <main id="showcaseView" class="max-w-md mx-auto p-4 space-y-4 hidden">
-    <!-- پەیامی سەرەکی بۆ کڕیار -->
     <div class="bg-gradient-to-b from-brand-card to-slate-900 p-4 rounded-2xl border border-brand-border text-center space-y-1.5 shadow-xl">
       <span class="text-[10px] bg-brand-500/20 text-brand-400 border border-brand-500/30 px-2 py-0.5 rounded-full font-semibold">پێشانگای فەرمی کارەکانمان</span>
       <h2 class="text-lg font-black text-white">پۆڵیش و نانۆ سیرامیکی ئاوێنە کار</h2>
-      <p class="text-xs text-slate-400">نموونەی ئەو ئۆتۆمبێلانەی بە بەرزترین کوالێتی و باشترین مەوادی ئەڵمانی لە هەڵەبجە ئیشیان بۆ کراوە.</p>
+      <p class="text-xs text-slate-400">نموونەی ئەو ئۆتۆمبێلانەی بە بەرزترین کوالێتی و باشترین مەواد لە هەڵەبجە ئیشیان بۆ کراوە.</p>
     </div>
 
     <!-- کارەکان بە ڕیز بۆ کڕیار -->
     <div id="showcaseCardsContainer" class="space-y-5">
-      <!-- کارەکان لێرە بە شێوەی گشتی پیشان دەدرێن -->
+      <!-- لێرە باردەبێت -->
     </div>
 
-    <!-- دوگمەی واتسئەپی جێگیر بۆ نۆرەگرتنی کڕیار -->
+    <!-- دوگمەی پەیوەندی واتسئەپ بۆ کڕیار -->
     <div class="pt-4 pb-8">
       <a href="https://api.whatsapp.com/send?phone=9647501234567&text=سڵاو،%20سەیری%20نموونەی%20کارەکانتانم%20کرد،%20دەمەوێت%20نۆرە%20بگرم%20بۆ%20سەیارەکەم." 
          target="_blank" 
@@ -182,7 +179,7 @@
 
       <form onsubmit="handleCarSubmit(event)" class="space-y-3.5 text-xs">
         
-        <!-- بەشی موشتەری -->
+        <!-- زانیاری موشتەری (نهێنی) -->
         <div class="bg-slate-900/60 p-3 rounded-xl border border-brand-border space-y-2">
           <span class="text-[11px] font-bold text-brand-400 block">زانیاری خاوەن سەیارە (تایبەت بۆ خۆت)</span>
           <div class="grid grid-cols-2 gap-2">
@@ -197,7 +194,7 @@
           </div>
         </div>
 
-        <!-- بەشی سەیارە -->
+        <!-- زانیاری سەیارە -->
         <div class="bg-slate-900/60 p-3 rounded-xl border border-brand-border space-y-2">
           <span class="text-[11px] font-bold text-brand-400 block">زانیاری سەیارە</span>
           <div class="grid grid-cols-2 gap-2">
@@ -222,7 +219,7 @@
           </div>
         </div>
 
-        <!-- ئەو کارانەی بۆی کراوە + پارە -->
+        <!-- کار و پارەی وەرگیراو -->
         <div class="bg-slate-900/60 p-3 rounded-xl border border-brand-border space-y-2">
           <span class="text-[11px] font-bold text-brand-400 block">کار و پارەی وەرگیراو</span>
           <div>
@@ -235,7 +232,7 @@
           </div>
         </div>
 
-        <!-- بەشی وێنەکان (فرە وێنەی پێش و پاش) -->
+        <!-- بەشی وێنەکان (فرە وێنە بە کامێرا و گەلەری) -->
         <div class="bg-slate-900/60 p-3 rounded-xl border border-brand-border space-y-3">
           <div class="flex items-center justify-between">
             <span class="text-[11px] font-bold text-brand-400">وێنەکانی پێش و پاش (Before / After)</span>
@@ -246,7 +243,7 @@
           </div>
 
           <div id="photoPairsContainer" class="space-y-3">
-            <!-- جووتی یەکەمی وێنەکان بە شێوەی دیفۆڵت لێرەیە -->
+            <!-- جووتە وێنەکان لێرە دروست دەبن -->
           </div>
         </div>
 
@@ -257,15 +254,14 @@
     </div>
   </div>
 
-  <!-- شاراوە: دوو ئینپوتی فایل بۆ کامێرا و بۆ گەلەری -->
+  <!-- ئینپوتی شاراوەی کامێرا و گەلەری -->
   <input type="file" id="cameraInput" accept="image/*" capture="environment" class="hidden">
   <input type="file" id="galleryInput" accept="image/*" class="hidden">
 
   <!-- ==========================================
-       5. کۆدی جاڤاسکریپتی ئەپڵیکەیشن (Application Logic)
+       5. کۆدی بەرنامەکە (JavaScript)
        ========================================== -->
   <script>
-    // داتابەیسی ناوخۆیی لەسەر مۆبایلی شوێنکار
     let carsDb = JSON.parse(localStorage.getItem('awena_cars_db')) || [
       {
         id: 'car-101',
@@ -288,8 +284,9 @@
       }
     ];
 
-    let currentPhotoTarget = { pairIndex: null, type: null }; // بۆ دیاریکردنی ئەوەی وێنە بۆ کام خانەیە دەڕوات
+    let currentPhotoTarget = { pairIndex: null, type: null };
     let activePairsCount = 0;
+    let tempPairPhotos = {}; // کۆگای کاتی بۆ وێنە بارکراوەکان
 
     function saveToLocal() {
       localStorage.setItem('awena_cars_db', JSON.stringify(carsDb));
@@ -298,15 +295,27 @@
       renderShowcase();
     }
 
-    /* گۆڕینی دۆخ لە نێوان (ئەرشیفی شوێنکار) و (پۆرتفۆلیۆی کڕیار) */
+    /* پشکنینی لینکی کڕیار */
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('showcase') === 'all' || urlParams.get('view') === 'showcase') {
+        toggleAppMode('showcase');
+      } else {
+        updateStats();
+        renderCarsList();
+        renderShowcase();
+      }
+    });
+
+    /* گۆڕینی دۆخ */
     function toggleAppMode(forceMode = null) {
       const workshopView = document.getElementById('workshopView');
       const showcaseView = document.getElementById('showcaseView');
       const modeBtnLabel = document.getElementById('modeSwitchLabel');
 
-      const isShowcase = forceMode === 'showcase' || workshopView.classList.contains('hidden') === false;
+      const isCurrentlyWorkshop = !workshopView.classList.contains('hidden');
 
-      if (isShowcase && forceMode !== 'workshop') {
+      if (forceMode === 'showcase' || (forceMode === null && isCurrentlyWorkshop)) {
         workshopView.classList.add('hidden');
         showcaseView.classList.remove('hidden');
         modeBtnLabel.innerText = 'ئەرشیفی شوێنکار';
@@ -318,14 +327,13 @@
       lucide.createIcons();
     }
 
-    /* ئامارەکان */
     function updateStats() {
       document.getElementById('statTotalCars').innerText = carsDb.length;
       let totalRevenue = carsDb.reduce((acc, car) => acc + (parseFloat(car.pricePaid) || 0), 0);
       document.getElementById('statTotalRevenue').innerHTML = `${totalRevenue.toLocaleString()} <span class="text-[10px]">د.ع</span>`;
     }
 
-    /* پیشاندانی سەیارەکان لەناو ئەرشیفی شوێنکار */
+    /* پیشاندانی ئەرشیفی شوێنکار */
     function renderCarsList(filtered = null) {
       const container = document.getElementById('carsListContainer');
       const list = filtered || carsDb;
@@ -356,7 +364,6 @@
             <span class="text-brand-400 font-semibold">ئیش:</span> ${car.services}
           </div>
 
-          <!-- پیشاندانی سڵایدەری پێش و پاش ئەگەر هەبێت -->
           ${car.photos && car.photos.length > 0 && car.photos[0].before && car.photos[0].after ? `
             <div class="space-y-1">
               <span class="text-[10px] text-slate-400">${car.photos[0].title || 'پێش و پاش'}:</span>
@@ -365,4 +372,266 @@
                 <div class="slider-overlay-img overflow-hidden" id="car-slider-${car.id}" style="width: 50%;">
                   <img src="${car.photos[0].before}" class="w-full h-full object-cover" style="width: calc(100vw - 48px); max-width: 400px;">
                 </div>
-                <input type="range" min="0" max="100" valu
+                <input type="range" min="0" max="100" value="50" oninput="document.getElementById('car-slider-${car.id}').style.width = this.value + '%'" 
+                       class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize">
+                <span class="absolute bottom-2 start-2 text-[9px] bg-black/70 px-1.5 py-0.5 rounded text-white pointer-events-none">پێش کار</span>
+                <span class="absolute bottom-2 end-2 text-[9px] bg-sky-600/80 px-1.5 py-0.5 rounded text-white pointer-events-none">دوای کار</span>
+              </div>
+            </div>
+          ` : ''}
+
+          <div class="flex items-center gap-2 pt-1 border-t border-brand-border/60">
+            <button onclick="shareSingleCar('${car.id}')" class="flex-1 py-1.5 px-2 bg-slate-800 hover:bg-slate-700 text-sky-400 text-xs font-semibold rounded-xl border border-brand-border flex items-center justify-center gap-1.5">
+              <i data-lucide="share" class="w-3.5 h-3.5"></i>
+              <span>ناردنی تەنها ئەمە بۆ کڕیار</span>
+            </button>
+            <button onclick="deleteCar('${car.id}')" class="p-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-xl border border-rose-500/20">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    /* پیشاندانی پۆرتفۆلیۆی کڕیار (Public Showcase) */
+    function renderShowcase() {
+      const container = document.getElementById('showcaseCardsContainer');
+      if (carsDb.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">هیچ کارێک بۆ نیشاندان بەردەست نییە</p>`;
+        return;
+      }
+
+      container.innerHTML = carsDb.map(car => `
+        <div class="bg-brand-card rounded-2xl border border-brand-border overflow-hidden shadow-lg space-y-3 p-3.5">
+          <div class="flex items-start justify-between">
+            <div>
+              <h3 class="font-extrabold text-base text-white">${car.makeModel}</h3>
+              <p class="text-xs text-brand-400 mt-0.5">${car.services}</p>
+            </div>
+            <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full font-mono">${car.year} • ${car.color}</span>
+          </div>
+
+          <div class="space-y-3">
+            ${(car.photos || []).map((photo, pIdx) => `
+              <div class="space-y-1">
+                <span class="text-[11px] font-semibold text-slate-300 block">${photo.title || 'بەراوردی پێش و پاش'}</span>
+                <div class="slider-comparison-container h-52 rounded-xl border border-brand-border bg-black relative">
+                  <img src="${photo.after}" class="w-full h-full object-cover">
+                  <div class="slider-overlay-img overflow-hidden" id="showcase-slider-${car.id}-${pIdx}" style="width: 50%;">
+                    <img src="${photo.before}" class="w-full h-full object-cover" style="width: calc(100vw - 44px); max-width: 410px;">
+                  </div>
+                  <input type="range" min="0" max="100" value="50" oninput="document.getElementById('showcase-slider-${car.id}-${pIdx}').style.width = this.value + '%'" 
+                         class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize">
+                  <span class="absolute bottom-2 start-2 text-[9px] bg-black/80 px-2 py-0.5 rounded text-white pointer-events-none">پێش کار (Before)</span>
+                  <span class="absolute bottom-2 end-2 text-[9px] bg-sky-600/90 px-2 py-0.5 rounded text-white pointer-events-none">دوای کار (After)</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    /* کارەکانی مۆداڵی سەیارەی نوێ */
+    function openNewCarModal() {
+      document.getElementById('newCarModal').classList.remove('hidden');
+      document.getElementById('photoPairsContainer').innerHTML = '';
+      activePairsCount = 0;
+      tempPairPhotos = {};
+      addNewPhotoPairInputs();
+      lucide.createIcons();
+    }
+
+    function closeNewCarModal() {
+      document.getElementById('newCarModal').classList.add('hidden');
+    }
+
+    function addNewPhotoPairInputs() {
+      const pIdx = activePairsCount++;
+      tempPairPhotos[pIdx] = { before: null, after: null };
+
+      const container = document.getElementById('photoPairsContainer');
+      const div = document.createElement('div');
+      div.className = 'p-2.5 bg-slate-800/80 rounded-xl border border-brand-border space-y-2';
+      div.id = `pairRow_${pIdx}`;
+
+      div.innerHTML = `
+        <div class="flex items-center justify-between">
+          <input type="text" placeholder="ناوی بەش (وەک: کاپۆت، لای دەرگا، ناوەوە)" id="pairTitle_${pIdx}" value="${pIdx === 0 ? 'کاپۆت و بەرگە بزوێنەر' : 'بەشی تەنیشتەکان'}" class="bg-slate-900 border border-brand-border text-white px-2 py-1 rounded text-xs w-2/3">
+          <span class="text-[10px] text-slate-400 font-mono">جووتی #${pIdx + 1}</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 text-[11px]">
+          <!-- وێنەی پێشتر -->
+          <div class="space-y-1">
+            <span class="text-slate-300 block">وێنەی پێش کار (Before):</span>
+            <div id="previewBefore_${pIdx}" class="h-24 bg-slate-900 rounded-lg border border-dashed border-brand-border flex items-center justify-center overflow-hidden">
+              <span class="text-[10px] text-slate-500">وێنە نییە</span>
+            </div>
+            <div class="flex gap-1">
+              <button type="button" onclick="chooseImageSource(${pIdx}, 'before', 'camera')" class="flex-1 py-1 bg-slate-700 hover:bg-slate-600 rounded text-[10px] text-white flex items-center justify-center gap-1">
+                <i data-lucide="camera" class="w-3 h-3"></i> کامێرا
+              </button>
+              <button type="button" onclick="chooseImageSource(${pIdx}, 'before', 'gallery')" class="flex-1 py-1 bg-slate-700 hover:bg-slate-600 rounded text-[10px] text-white flex items-center justify-center gap-1">
+                <i data-lucide="image" class="w-3 h-3"></i> گەلەری
+              </button>
+            </div>
+          </div>
+
+          <!-- وێنەی دواتر -->
+          <div class="space-y-1">
+            <span class="text-slate-300 block">وێنەی دوای کار (After):</span>
+            <div id="previewAfter_${pIdx}" class="h-24 bg-slate-900 rounded-lg border border-dashed border-brand-border flex items-center justify-center overflow-hidden">
+              <span class="text-[10px] text-slate-500">وێنە نییە</span>
+            </div>
+            <div class="flex gap-1">
+              <button type="button" onclick="chooseImageSource(${pIdx}, 'after', 'camera')" class="flex-1 py-1 bg-slate-700 hover:bg-slate-600 rounded text-[10px] text-white flex items-center justify-center gap-1">
+                <i data-lucide="camera" class="w-3 h-3"></i> کامێرا
+              </button>
+              <button type="button" onclick="chooseImageSource(${pIdx}, 'after', 'gallery')" class="flex-1 py-1 bg-slate-700 hover:bg-slate-600 rounded text-[10px] text-white flex items-center justify-center gap-1">
+                <i data-lucide="image" class="w-3 h-3"></i> گەلەری
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      container.appendChild(div);
+      lucide.createIcons();
+    }
+
+    /* هەڵبژاردنی سەرچاوەی وێنە (کامێرا یان گەلەری) */
+    function chooseImageSource(pIdx, type, source) {
+      currentPhotoTarget = { pairIndex: pIdx, type: type };
+      if (source === 'camera') {
+        document.getElementById('cameraInput').click();
+      } else {
+        document.getElementById('galleryInput').click();
+      }
+    }
+
+    // گوێگرتن لە فایلەکانی کامێرا و گەلەری بە پەستاندنی قەبارە (Compression)
+    function setupFileInputListeners() {
+      const handleFile = (inputElement) => {
+        const file = inputElement.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          // بچووککردنەوەی وێنە بە Canvas بۆ ئەوەی خێرا بێت و مۆبایل قورس نەکات
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 800;
+            const scaleSize = MAX_WIDTH / img.width;
+            canvas.width = MAX_WIDTH;
+            canvas.height = img.height * scaleSize;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            
+            const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+            
+            const pIdx = currentPhotoTarget.pairIndex;
+            const type = currentPhotoTarget.type;
+
+            if (tempPairPhotos[pIdx]) {
+              tempPairPhotos[pIdx][type] = compressedBase64;
+              const previewEl = document.getElementById(type === 'before' ? `previewBefore_${pIdx}` : `previewAfter_${pIdx}`);
+              if (previewEl) {
+                previewEl.innerHTML = `<img src="${compressedBase64}" class="w-full h-full object-cover">`;
+              }
+            }
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+        inputElement.value = ''; // ڕێستکردنەوە
+      };
+
+      document.getElementById('cameraInput').addEventListener('change', function() { handleFile(this); });
+      document.getElementById('galleryInput').addEventListener('change', function() { handleFile(this); });
+    }
+    setupFileInputListeners();
+
+    /* پاشەکەوتکردنی سەیارەی نوێ */
+    function handleCarSubmit(e) {
+      e.preventDefault();
+
+      const photosList = [];
+      for (let i = 0; i < activePairsCount; i++) {
+        const title = document.getElementById(`pairTitle_${i}`) ? document.getElementById(`pairTitle_${i}`).value : 'بەراورد';
+        const pair = tempPairPhotos[i];
+        if (pair && pair.before && pair.after) {
+          photosList.push({
+            title: title,
+            before: pair.before,
+            after: pair.after
+          });
+        }
+      }
+
+      const newCar = {
+        id: 'car-' + Date.now(),
+        customerName: document.getElementById('cust_name').value,
+        customerPhone: document.getElementById('cust_phone').value,
+        makeModel: document.getElementById('car_model').value,
+        year: parseInt(document.getElementById('car_year').value) || 2023,
+        color: document.getElementById('car_color').value,
+        plate: document.getElementById('car_plate').value,
+        services: document.getElementById('car_services').value,
+        pricePaid: parseFloat(document.getElementById('car_price').value) || 0,
+        date: new Date().toISOString().split('T')[0],
+        photos: photosList
+      };
+
+      carsDb.unshift(newCar);
+      saveToLocal();
+      closeNewCarModal();
+    }
+
+    /* سڕینەوەی سەیارە */
+    function deleteCar(carId) {
+      if (confirm('ئایا دڵنیایت لە سڕینەوەی ئەم سەیارەیە لە ئەرشیف؟')) {
+        carsDb = carsDb.filter(c => c.id !== carId);
+        saveToLocal();
+      }
+    }
+
+    /* کۆپیکردنی لینکی هەموو سەیارەکان بۆ کڕیار */
+    function copyPublicPortfolioLink() {
+      const publicUrl = window.location.origin + window.location.pathname + '?showcase=all';
+      navigator.clipboard.writeText(publicUrl).then(() => {
+        alert('لینکی پۆرتفۆلیۆی هەموو سەیارەکان کۆپی کرا!\nدەتوانیت لە واتسئەپ بۆ هەر کڕیارێکی بنێریت.');
+      }).catch(() => {
+        prompt('ئەم لینکە کۆپی بکە و بینێرە بۆ کڕیار:', publicUrl);
+      });
+    }
+
+    /* ناردنی تەنها یەک سەیارە لە واتسئەپ */
+    function shareSingleCar(carId) {
+      const car = carsDb.find(c => c.id === carId);
+      if (!car) return;
+      const text = `سڵاو بەڕێز، ئەمە نموونەی کاری AWENA CAR بۆ سەیارەی ${car.makeModel}:\nخزمەتگوزاری: ${car.services}\nدەتوانیت لەم لینکەوە نموونەی کارەکان ببینیت:\n${window.location.origin + window.location.pathname}?showcase=all`;
+      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+    }
+
+    /* گەڕان */
+    function handleSearch(q) {
+      if (!q.trim()) {
+        renderCarsList();
+        return;
+      }
+      const query = q.toLowerCase();
+      const filtered = carsDb.filter(c => 
+        c.makeModel.toLowerCase().includes(query) ||
+        c.plate.toLowerCase().includes(query) ||
+        c.customerName.toLowerCase().includes(query) ||
+        c.customerPhone.includes(query)
+      );
+      renderCarsList(filtered);
+    }
+  </script>
+</body>
+</html>
