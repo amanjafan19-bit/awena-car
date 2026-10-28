@@ -56,14 +56,42 @@
       </div>
     </div>
 
-    <button onclick="toggleAppMode()" id="modeSwitchBtn" class="px-3 py-1.5 text-xs font-bold rounded-xl bg-slate-800 border border-brand-border text-brand-400 flex items-center gap-1.5 shadow">
-      <i data-lucide="eye" class="w-4 h-4"></i>
-      <span id="modeSwitchLabel">نیشاندانی کڕیار</span>
-    </button>
+    <!-- دوگمەی چوونەژوورەوەی خاوەنکار یان گۆڕین -->
+    <div id="authHeaderArea">
+      <button onclick="handleAdminAuth()" id="adminAuthBtn" class="px-3 py-1.5 text-xs font-bold rounded-xl bg-slate-800 border border-brand-border text-brand-400 flex items-center gap-1.5 shadow">
+        <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+        <span id="adminAuthLabel">چوونەژوورەوە</span>
+      </button>
+    </div>
   </header>
 
-  <!-- Workshop View -->
-  <main id="workshopView" class="max-w-md mx-auto p-4 space-y-4">
+  <!-- ==========================================
+       1. شاشەی کڕیار (Public Showcase) - دیفۆڵت بۆ هەموو خەڵک
+       ========================================== -->
+  <main id="showcaseView" class="max-w-md mx-auto p-4 space-y-4">
+    <div class="bg-gradient-to-b from-brand-card to-slate-900 p-4 rounded-2xl border border-brand-border text-center space-y-1.5 shadow-xl">
+      <span class="text-[10px] bg-brand-500/20 text-brand-400 border border-brand-500/30 px-2 py-0.5 rounded-full font-semibold">پێشانگای فەرمی کارەکانمان</span>
+      <h2 class="text-lg font-black text-white">پۆڵیش و نانۆ سیرامیکی ئاوێنە کار</h2>
+      <p class="text-xs text-slate-400">دەست لە هەر سەیارەیەک بدە بۆ بینینی جیاوازی پێش و پاشی کارەکانمان.</p>
+    </div>
+
+    <!-- تەنها سەیارەکان بە کرانەوەی سڵایدەر پیشان دەدرێن -->
+    <div id="showcaseCardsContainer" class="space-y-3"></div>
+
+    <div class="pt-4 pb-8">
+      <a href="https://api.whatsapp.com/send?phone=9647501234567&text=سڵاو،%20سەیری%20نموونەی%20کارەکانتانم%20کرد،%20دەمەوێت%20نۆرە%20بگرم%20بۆ%20سەیارەکەم." 
+         target="_blank" 
+         class="w-full py-3.5 px-4 bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white font-extrabold text-sm rounded-2xl shadow-xl shadow-emerald-700/30 flex items-center justify-center gap-2 transition text-center">
+        <i data-lucide="message-circle" class="w-5 h-5"></i>
+        <span>پەیوەندی لە واتسئەپ بۆ وەرگرتنی نۆرە</span>
+      </a>
+    </div>
+  </main>
+
+  <!-- ==========================================
+       2. شاشەی بەڕێوەبەر (تەنها بە کۆدی نهێنی دەکرێتەوە)
+       ========================================== -->
+  <main id="workshopView" class="max-w-md mx-auto p-4 space-y-4 hidden">
     <div class="grid grid-cols-2 gap-3">
       <div class="bg-brand-card p-3 rounded-2xl border border-brand-border flex items-center justify-between">
         <div>
@@ -101,8 +129,8 @@
 
     <div class="space-y-2">
       <div class="flex items-center justify-between px-1">
-        <h2 class="text-xs font-bold text-slate-400">سەیارە تۆمارکراوەکانی شوێنکار</h2>
-        <span id="syncIndicator" class="text-[10px] text-emerald-400 flex items-center gap-1">
+        <h2 class="text-xs font-bold text-slate-400">ئەرشیفی سەیارەکان (تایبەت بە خۆت)</h2>
+        <span class="text-[10px] text-emerald-400 flex items-center gap-1">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> سێرڤەری هەور چالاکە
         </span>
       </div>
@@ -110,27 +138,7 @@
     </div>
   </main>
 
-  <!-- Public Showcase View -->
-  <main id="showcaseView" class="max-w-md mx-auto p-4 space-y-4 hidden">
-    <div class="bg-gradient-to-b from-brand-card to-slate-900 p-4 rounded-2xl border border-brand-border text-center space-y-1.5 shadow-xl">
-      <span class="text-[10px] bg-brand-500/20 text-brand-400 border border-brand-500/30 px-2 py-0.5 rounded-full font-semibold">پێشانگای فەرمی کارەکانمان</span>
-      <h2 class="text-lg font-black text-white">پۆڵیش و نانۆ سیرامیکی ئاوێنە کار</h2>
-      <p class="text-xs text-slate-400">دەست لە هەر سەیارەیەک بدە بۆ بینینی جیاوازی پێش و پاشی کارەکانمان.</p>
-    </div>
-
-    <div id="showcaseCardsContainer" class="space-y-3"></div>
-
-    <div class="pt-4 pb-8">
-      <a href="https://api.whatsapp.com/send?phone=9647501234567&text=سڵاو،%20سەیری%20نموونەی%20کارەکانتانم%20کرد،%20دەمەوێت%20نۆرە%20بگرم%20بۆ%20سەیارەکەم." 
-         target="_blank" 
-         class="w-full py-3.5 px-4 bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white font-extrabold text-sm rounded-2xl shadow-xl shadow-emerald-700/30 flex items-center justify-center gap-2 transition text-center">
-        <i data-lucide="message-circle" class="w-5 h-5"></i>
-        <span>پەیوەندی لە واتسئەپ بۆ وەرگرتنی نۆرە</span>
-      </a>
-    </div>
-  </main>
-
-  <!-- Modal -->
+  <!-- Modal برای سەیارەی نوێ و دەستکاری -->
   <div id="newCarModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
     <div class="bg-brand-card w-full max-w-md max-h-[92vh] overflow-y-auto rounded-t-2xl sm:rounded-2xl border border-brand-border shadow-2xl p-4 space-y-4">
       
@@ -141,7 +149,7 @@
 
       <form onsubmit="handleCarSubmit(event)" class="space-y-3.5 text-xs">
         <div class="bg-slate-900/60 p-3 rounded-xl border border-brand-border space-y-2">
-          <span class="text-[11px] font-bold text-brand-400 block">زانیاری خاوەن سەیارە (تایبەت بۆ خۆت)</span>
+          <span class="text-[11px] font-bold text-brand-400 block">زانیاری خاوەن سەیارە (نهێنی)</span>
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label class="text-slate-300 block mb-1">ناوی خاوەن سەیارە *</label>
@@ -206,10 +214,11 @@
   <input type="file" id="cameraInput" accept="image/*" capture="environment" class="hidden">
   <input type="file" id="galleryInput" accept="image/*" class="hidden">
 
-  <!-- Logic & Supabase Connection -->
+  <!-- Logic & Security Script -->
   <script>
     const SUPABASE_URL = 'https://yryszfvdokaplaweqatj.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlyeXN6ZnZkb2thcGxhd2VxYXRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMyMDQ3NjgsImV4cCI6MjEwODc4MDc2OH0.aMJQI1EvLr1Yf6vEzj9rDEsGzLZByyzZQWbQrqSb3WQ';
+    const ADMIN_PIN = '1234'; // کۆدی نهێنی بۆ خاوەنکار
 
     const dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -219,6 +228,7 @@
     let activePairsCount = 0;
     let tempPairPhotos = {};
     let openAccordionId = null;
+    let isAdminUnlocked = localStorage.getItem('awena_admin_auth') === 'true';
 
     async function loadCarsFromSupabase() {
       try {
@@ -253,6 +263,10 @@
     }
 
     async function saveCarToSupabase(carData) {
+      if (!isAdminUnlocked) {
+        alert('تەنها بەڕێوەبەر دەتوانێت سەیارە تۆمار بکات');
+        return;
+      }
       const row = {
         id: carData.id,
         customer_name: carData.customerName,
@@ -270,43 +284,70 @@
       if (error) {
         alert('هەڵە لە سێرڤەر: ' + error.message);
       } else {
-        alert('سەیارەکە بە سەرکەوتوویی پاشەکەوت کرا و لەسەر هەموو مۆبایلەکان دەکرێتەوە!');
+        alert('سەیارەکە بە سەرکەوتوویی پاشەکەوت کرا!');
       }
       await loadCarsFromSupabase();
     }
 
     async function deleteCarFromSupabase(carId) {
+      if (!isAdminUnlocked) return;
       if (!confirm('ئایا دڵنیایت لە سڕینەوەی ئەم سەیارەیە؟')) return;
       await dbClient.from('cars').delete().eq('id', carId);
       await loadCarsFromSupabase();
     }
 
-    window.addEventListener('DOMContentLoaded', async () => {
-      await loadCarsFromSupabase();
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('showcase') === 'all' || urlParams.get('view') === 'showcase') {
-        toggleAppMode('showcase');
-      }
-    });
-
-    function toggleAppMode(forceMode = null) {
+    /* پشکنینی ئاسایش و دۆخی بەڕێوەبەر */
+    function updateSecurityUI() {
       const workshopView = document.getElementById('workshopView');
       const showcaseView = document.getElementById('showcaseView');
-      const modeBtnLabel = document.getElementById('modeSwitchLabel');
+      const authBtn = document.getElementById('adminAuthBtn');
+      const authLabel = document.getElementById('adminAuthLabel');
 
-      const isCurrentlyWorkshop = !workshopView.classList.contains('hidden');
-
-      if (forceMode === 'showcase' || (forceMode === null && isCurrentlyWorkshop)) {
+      if (isAdminUnlocked) {
+        // ئەگەر خۆت بیت و کۆدت لێدابێت: دەتوانی سەیری ئەرشیف بکەیت
+        authBtn.classList.remove('text-brand-400');
+        authBtn.classList.add('text-emerald-400');
+        authBtn.innerHTML = `<i data-lucide="unlock" class="w-3.5 h-3.5"></i> <span>دۆخی بەڕێوەبەر</span>`;
+        workshopView.classList.remove('hidden');
+        showcaseView.classList.add('hidden');
+      } else {
+        // بۆ خەڵک و کڕیار: تەنها پێشانگاکە دەکرێتەوە و هیچی تر
+        authBtn.classList.remove('text-emerald-400');
+        authBtn.classList.add('text-brand-400');
+        authBtn.innerHTML = `<i data-lucide="lock" class="w-3.5 h-3.5"></i> <span>چوونەژوورەوە</span>`;
         workshopView.classList.add('hidden');
         showcaseView.classList.remove('hidden');
-        modeBtnLabel.innerText = 'ئەرشیفی شوێنکار';
-      } else {
-        showcaseView.classList.add('hidden');
-        workshopView.classList.remove('hidden');
-        modeBtnLabel.innerText = 'نیشاندانی کڕیار';
       }
       lucide.createIcons();
     }
+
+    function handleAdminAuth() {
+      if (isAdminUnlocked) {
+        // ئەگەر خۆت بیت، دەتوانی بگەڕێیتەوە دۆخی کڕیار یان دەربچیت
+        const action = confirm('تۆ لە دۆخی بەڕێوەبەریت. دەتەوێت بچیتە دۆخی کڕیار و پەڕەکە داخەیت؟');
+        if (action) {
+          isAdminUnlocked = false;
+          localStorage.removeItem('awena_admin_auth');
+          updateSecurityUI();
+        }
+      } else {
+        // ئەگەر کۆدت لێنەدابێت، داوای PIN دەکات
+        const pin = prompt('تکایە کۆدی نهێنی بەڕێوەبەر بنووسە:');
+        if (pin === ADMIN_PIN) {
+          isAdminUnlocked = true;
+          localStorage.setItem('awena_admin_auth', 'true');
+          alert('بەخێربێیت بۆ دۆخی بەڕێوەبەرایەتی AWENA CAR!');
+          updateSecurityUI();
+        } else if (pin !== null) {
+          alert('کۆدی نهێنی هەڵەیە! تەنها بەڕێوەبەر مافی دەستکاریکردنی هەیە.');
+        }
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      await loadCarsFromSupabase();
+      updateSecurityUI();
+    });
 
     function updateStats() {
       document.getElementById('statTotalCars').innerText = carsDb.length;
@@ -345,10 +386,6 @@
             <button onclick="openEditCarModal('${car.id}')" class="flex-1 py-1.5 px-2 bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-semibold rounded-xl border border-brand-border flex items-center justify-center gap-1.5">
               <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
               <span>دەستکاریکردن</span>
-            </button>
-            <button onclick="shareSingleCar('${car.id}')" class="flex-1 py-1.5 px-2 bg-slate-800 hover:bg-slate-700 text-sky-400 text-xs font-semibold rounded-xl border border-brand-border flex items-center justify-center gap-1.5">
-              <i data-lucide="share" class="w-3.5 h-3.5"></i>
-              <span>ناردن بۆ کڕیار</span>
             </button>
             <button onclick="deleteCarFromSupabase('${car.id}')" class="p-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-xl border border-rose-500/20">
               <i data-lucide="trash-2" class="w-4 h-4"></i>
@@ -415,6 +452,7 @@
     }
 
     function openNewCarModal() {
+      if (!isAdminUnlocked) return;
       editingCarId = null;
       document.getElementById('modalTitle').innerText = 'تۆمارکردنی سەیارەی نوێ';
       document.getElementById('submitBtnText').innerText = 'پاشەکەوتکردن لە سێرڤەری هەور';
@@ -437,6 +475,7 @@
     }
 
     function openEditCarModal(carId) {
+      if (!isAdminUnlocked) return;
       const car = carsDb.find(c => c.id === carId);
       if (!car) return;
 
@@ -582,7 +621,7 @@
 
       const btn = document.getElementById('submitCarBtn');
       btn.disabled = true;
-      document.getElementById('submitBtnText').innerText = 'خەریکی ناردنە بۆ سێرڤەری هەور...';
+      document.getElementById('submitBtnText').innerText = 'خەریکی پاشەکەوتکردنە...';
 
       const photosList = [];
       for (let i = 0; i < activePairsCount; i++) {
@@ -621,17 +660,10 @@
     function copyPublicPortfolioLink() {
       const publicUrl = 'https://tinyurl.com/awena-car';
       navigator.clipboard.writeText(publicUrl).then(() => {
-        alert('لینکی پۆرتفۆلیۆ کۆپی کرا:\n' + publicUrl);
+        alert('لینکی گشتی کڕیار کۆپی کرا:\n' + publicUrl);
       }).catch(() => {
         prompt('ئەم لینکە کۆپی بکە و بینێرە بۆ کڕیار:', publicUrl);
       });
-    }
-
-    function shareSingleCar(carId) {
-      const car = carsDb.find(c => c.id === carId);
-      if (!car) return;
-      const text = `سڵاو بەڕێز، ئەمە نموونەی کاری AWENA CAR بۆ سەیارەی ${car.makeModel} (${car.year}):\nخزمەتگوزاری: ${car.services}\nدەتوانیت لەم لینکەوە سەیری تەواوی وێنەکانی پێش و پاش بکەیت:\nhttps://tinyurl.com/awena-car`;
-      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
     }
 
     function handleSearch(q) {
