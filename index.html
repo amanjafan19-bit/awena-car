@@ -39,10 +39,10 @@
 </head>
 <body class="bg-brand-dark text-slate-100 min-h-screen pb-16 select-none">
 
-  <!-- Header (هیچ دوگمەیەکی تێدا نییە بۆ کڕیار) -->
+  <!-- Header -->
   <header class="sticky top-0 z-40 bg-brand-card/95 backdrop-blur border-b border-brand-border px-4 py-3 flex items-center justify-between">
     <div class="flex items-center gap-3">
-      <!-- لۆگۆ: ٣ جار پەنجەی لێبدە بە خێرایی بۆ کردنەوەی ڕەمزی بەڕێوەبەر -->
+      <!-- لۆگۆ: ٣ جار لێدانی خێرا بۆ کردنەوەی ڕەمز -->
       <div onclick="handleSecretLogoClick()" class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-sky-400 flex items-center justify-center shadow-lg shadow-sky-500/20 font-black text-xl text-white cursor-pointer active:scale-95 transition">
         A
       </div>
@@ -52,7 +52,6 @@
       </div>
     </div>
 
-    <!-- ئەم بەشە تەنها کاتێک دەردەکەوێت کە خۆت کۆدت لێدابێت -->
     <div id="adminBadgeArea" class="hidden flex items-center gap-1.5">
       <button onclick="toggleAdminViewMode()" id="adminViewToggleBtn" class="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-slate-800 border border-brand-border text-brand-400 flex items-center gap-1 shadow">
         <i data-lucide="layout" class="w-3.5 h-3.5"></i>
@@ -68,15 +67,27 @@
        1. شاشەی کڕیار (Public Showcase)
        ========================================== -->
   <main id="showcaseView" class="max-w-md mx-auto p-4 space-y-4">
-    <!-- وتەی جوان لە سەرەتای کارەکان -->
+    
+    <!-- هۆشداری کاتێک تەنها یەک سەیارە دەکرێتەوە -->
+    <div id="singleCarNotice" class="hidden bg-sky-950/60 border border-brand-500/40 p-3 rounded-2xl flex items-center justify-between">
+      <div>
+        <span class="text-[10px] text-brand-400 font-bold block">تایبەت بەم سەیارەیە</span>
+        <span class="text-xs font-bold text-white" id="singleCarNoticeTitle"></span>
+      </div>
+      <button onclick="clearSingleCarFilter()" class="py-1 px-2.5 bg-brand-600 hover:bg-brand-500 text-white text-[11px] font-bold rounded-xl shadow">
+        بینینی هەموو کارەکان
+      </button>
+    </div>
+
+    <!-- وتەی سەرەکی -->
     <div class="bg-gradient-to-b from-brand-card to-slate-900 p-4 rounded-2xl border border-brand-border text-center space-y-1.5 shadow-xl">
       <span class="text-[10px] bg-brand-500/20 text-brand-400 border border-brand-500/30 px-2.5 py-0.5 rounded-full font-bold">AWENA DETAILING</span>
       <h2 class="text-base font-black text-white">« ئۆتۆمبێلی خاوێنتر، شۆفێری دڵخۆشتر »</h2>
       <p class="text-[11px] text-slate-400">Clean Cars, Happier Drivers</p>
-      <p class="text-[11px] text-slate-400 pt-1 border-t border-brand-border/40">دەست لە هەر وێنەیەک بدە بۆ بینینی بەراوردی پێش و پاش بە قەبارەی گەورە.</p>
+      <p class="text-[11px] text-slate-400 pt-1 border-t border-brand-border/40">دەست لە هەر وێنەیەک بدە بۆ بینینی بەراورد و زوومکردن بە کوالێتی بەرز.</p>
     </div>
 
-    <!-- کارەکان بۆ کڕیار -->
+    <!-- سەیارەکان -->
     <div id="showcaseCardsContainer" class="space-y-3"></div>
 
     <div class="pt-4 pb-8">
@@ -90,7 +101,7 @@
   </main>
 
   <!-- ==========================================
-       2. شاشەی بەڕێوەبەر (تەنها بە ٣ جار لێدان لە لۆگۆ دەکرێتەوە)
+       2. شاشەی بەڕێوەبەر (ئەرشیف)
        ========================================== -->
   <main id="workshopView" class="max-w-md mx-auto p-4 space-y-4 hidden">
     <div class="grid grid-cols-2 gap-3">
@@ -140,41 +151,64 @@
   </main>
 
   <!-- ==========================================
-       3. پەنجەرەی گەورەکردن و بەراوردی وێنە (Lightbox)
+       3. پەنجەرەی گەورەکردن و زووم (Lightbox with Zoom)
        ========================================== -->
   <div id="photoLightbox" class="fixed inset-0 z-50 bg-black/95 hidden flex flex-col justify-between p-3 sm:p-5 select-none">
-    <!-- بەشی سەرەوەی گەورەکردن -->
+    
+    <!-- سەرەوە: ناونیشان و دوگمەی داخستن -->
     <div class="flex items-center justify-between text-white border-b border-slate-800 pb-2">
       <div>
         <h3 id="lightboxCarTitle" class="text-xs font-bold text-brand-400">AWENA DETAILING</h3>
         <p id="lightboxPartTitle" class="text-[11px] text-slate-400">بەراوردی پێش و پاش</p>
       </div>
-      <button onclick="closeLightbox()" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-full text-slate-300 hover:text-white">
-        <i data-lucide="x" class="w-5 h-5"></i>
-      </button>
+      <div class="flex items-center gap-2">
+        <span id="zoomPercentBadge" class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full font-mono">100%</span>
+        <button onclick="closeLightbox()" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-full text-slate-300 hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
     </div>
 
-    <!-- وێنەی گەورەکراو -->
-    <div class="flex-1 flex items-center justify-center p-1 overflow-hidden my-2">
-      <img id="lightboxImg" src="" class="max-h-[68vh] w-auto max-w-full rounded-2xl object-contain shadow-2xl transition duration-150">
+    <!-- شوێنی وێنە بە زووم و ڕاکێشان -->
+    <div id="lightboxViewport" class="flex-1 flex items-center justify-center p-1 overflow-hidden my-2 relative">
+      <img id="lightboxImg" src="" class="max-h-[64vh] w-auto max-w-full rounded-xl object-contain shadow-2xl transition duration-150 select-none">
     </div>
 
-    <!-- دوو دوگمەی گۆڕین لە نێوان پێش و پاش -->
-    <div class="bg-slate-900/90 border border-brand-border p-2 rounded-2xl flex items-center justify-center gap-2 max-w-xs mx-auto w-full">
-      <button id="lightboxBtnBefore" onclick="switchLightboxTab('before')" class="flex-1 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition">
-        <span class="w-2 h-2 rounded-full bg-rose-500"></span>
-        <span>پێش کار (Before)</span>
-      </button>
-      <button id="lightboxBtnAfter" onclick="switchLightboxTab('after')" class="flex-1 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition">
-        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-        <span>دوای کار (After)</span>
-      </button>
+    <!-- کۆنتڕۆڵی زووم + گۆڕینی پێش و پاش -->
+    <div class="space-y-2 max-w-sm mx-auto w-full">
+      <!-- دوگمەکانی زوومکردن -->
+      <div class="flex items-center justify-center gap-2 bg-slate-900/80 border border-brand-border/60 py-1 px-3 rounded-xl">
+        <button onclick="zoomOut()" class="p-1.5 text-slate-300 hover:text-white rounded-lg hover:bg-slate-800 flex items-center gap-1 text-[11px]">
+          <i data-lucide="zoom-out" class="w-4 h-4"></i>
+          <span>بچووک</span>
+        </button>
+        <span class="text-slate-600">|</span>
+        <button onclick="resetZoom()" class="p-1.5 text-slate-300 hover:text-white rounded-lg hover:bg-slate-800 flex items-center gap-1 text-[11px]">
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+          <span>ڕێکخستنەوە</span>
+        </button>
+        <span class="text-slate-600">|</span>
+        <button onclick="zoomIn()" class="p-1.5 text-brand-400 hover:text-brand-300 rounded-lg hover:bg-slate-800 flex items-center gap-1 text-[11px] font-bold">
+          <i data-lucide="zoom-in" class="w-4 h-4"></i>
+          <span>گەورە (زووم)</span>
+        </button>
+      </div>
+
+      <!-- گۆڕین لە نێوان پێش و پاش -->
+      <div class="bg-slate-900/90 border border-brand-border p-1.5 rounded-2xl flex items-center justify-center gap-2">
+        <button id="lightboxBtnBefore" onclick="switchLightboxTab('before')" class="flex-1 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition">
+          <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+          <span>پێش کار (Before)</span>
+        </button>
+        <button id="lightboxBtnAfter" onclick="switchLightboxTab('after')" class="flex-1 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span>دوای کار (After)</span>
+        </button>
+      </div>
     </div>
   </div>
 
-  <!-- ==========================================
-       4. مۆداڵی تۆمارکردن و دەستکاری
-       ========================================== -->
+  <!-- Modal برای سەیارەی نوێ و دەستکاری -->
   <div id="newCarModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
     <div class="bg-brand-card w-full max-w-md max-h-[92vh] overflow-y-auto rounded-t-2xl sm:rounded-2xl border border-brand-border shadow-2xl p-4 space-y-4">
       
@@ -250,11 +284,11 @@
   <input type="file" id="cameraInput" accept="image/*" capture="environment" class="hidden">
   <input type="file" id="galleryInput" accept="image/*" class="hidden">
 
-  <!-- Logic & Supabase Script -->
+  <!-- Logic Script -->
   <script>
     const SUPABASE_URL = 'https://yryszfvdokaplaweqatj.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlyeXN6ZnZkb2thcGxhd2VxYXRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMyMDQ3NjgsImV4cCI6MjEwODc4MDc2OH0.aMJQI1EvLr1Yf6vEzj9rDEsGzLZByyzZQWbQrqSb3WQ';
-    const ADMIN_PIN = 'AWENA2003'; // ڕەمزی نوێی بەڕێوەبەر
+    const ADMIN_PIN = 'AWENA2003';
 
     const dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -264,12 +298,14 @@
     let activePairsCount = 0;
     let tempPairPhotos = {};
     let openAccordionId = null;
+    let singleCarFilterId = null;
     let isAdminUnlocked = localStorage.getItem('awena_admin_auth') === 'true';
 
-    // گۆڕاوەکانی گەورەکردنی وێنە (Lightbox)
+    // گۆڕاوەکانی Lightbox و Zoom
     let currentLightbox = { carTitle: '', partTitle: '', before: '', after: '', currentTab: 'before' };
+    let currentZoom = 1;
 
-    // پشکنینی لێدانی ٣ جار لەسەر لۆگۆ
+    // لێدانی ٣ جار لە لۆگۆ
     let secretLogoClicks = 0;
     let secretLogoTimer = null;
 
@@ -405,10 +441,31 @@
       await loadCarsFromSupabase();
     }
 
+    /* پشکنینی لینکی کڕیار بۆ یەک سەیارە */
     window.addEventListener('DOMContentLoaded', async () => {
       await loadCarsFromSupabase();
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const targetCarId = urlParams.get('car');
+      if (targetCarId) {
+        singleCarFilterId = targetCarId;
+        openAccordionId = targetCarId;
+        const targetCar = carsDb.find(c => c.id === targetCarId);
+        if (targetCar) {
+          document.getElementById('singleCarNotice').classList.remove('hidden');
+          document.getElementById('singleCarNoticeTitle').innerText = `${targetCar.makeModel} (${targetCar.year})`;
+        }
+        renderShowcase();
+      }
+
       updateSecurityUI();
     });
+
+    function clearSingleCarFilter() {
+      singleCarFilterId = null;
+      document.getElementById('singleCarNotice').classList.add('hidden');
+      renderShowcase();
+    }
 
     function updateStats() {
       document.getElementById('statTotalCars').innerText = carsDb.length;
@@ -443,29 +500,42 @@
             <span class="text-brand-400 font-semibold">ئیش:</span> ${car.services}
           </div>
 
-          <div class="flex items-center gap-2 pt-1 border-t border-brand-border/60">
-            <button onclick="openEditCarModal('${car.id}')" class="flex-1 py-1.5 px-2 bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-semibold rounded-xl border border-brand-border flex items-center justify-center gap-1.5">
-              <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
-              <span>دەستکاریکردن</span>
+          <!-- دوگمەی ناردنی تەنها ئەم سەیارەیە + دەستکاری + سڕینەوە -->
+          <div class="space-y-1.5 pt-1 border-t border-brand-border/60">
+            <button onclick="shareSingleCarLink('${car.id}')" class="w-full py-1.5 px-3 bg-brand-600/20 hover:bg-brand-600/30 text-brand-400 text-xs font-bold rounded-xl border border-brand-500/30 flex items-center justify-center gap-1.5 shadow">
+              <i data-lucide="share" class="w-3.5 h-3.5"></i>
+              <span>ناردنی تەنها ئەم سەیارەیە بۆ کڕیار</span>
             </button>
-            <button onclick="deleteCarFromSupabase('${car.id}')" class="p-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-xl border border-rose-500/20">
-              <i data-lucide="trash-2" class="w-4 h-4"></i>
-            </button>
+            <div class="flex items-center gap-2">
+              <button onclick="openEditCarModal('${car.id}')" class="flex-1 py-1.5 px-2 bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-semibold rounded-xl border border-brand-border flex items-center justify-center gap-1.5">
+                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                <span>دەستکاریکردن</span>
+              </button>
+              <button onclick="deleteCarFromSupabase('${car.id}')" class="p-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-xl border border-rose-500/20">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+              </button>
+            </div>
           </div>
         </div>
       `).join('');
       lucide.createIcons();
     }
 
-    /* پیشاندانی سەیارەکان بە شێوازی نوێی وێنەکان (جیابوونەوە و گەورەکردن) */
     function renderShowcase() {
       const container = document.getElementById('showcaseCardsContainer');
-      if (carsDb.length === 0) {
+      let list = carsDb;
+
+      // ئەگەر کڕیار لە ڕێگەی لینکی یەک سەیارە هاتبێت
+      if (singleCarFilterId) {
+        list = carsDb.filter(c => c.id === singleCarFilterId);
+      }
+
+      if (list.length === 0) {
         container.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">هیچ کارێک بۆ نیشاندان بەردەست نییە</p>`;
         return;
       }
 
-      container.innerHTML = carsDb.map(car => {
+      container.innerHTML = list.map(car => {
         const isOpen = openAccordionId === car.id;
         return `
           <div class="bg-brand-card rounded-2xl border border-brand-border overflow-hidden shadow-lg transition">
@@ -489,7 +559,6 @@
                   <div class="space-y-1.5 bg-slate-900/60 p-2.5 rounded-xl border border-brand-border/60">
                     <span class="text-xs font-bold text-slate-300 block">${photo.title || 'بەراوردی پێش و پاش'}</span>
                     
-                    <!-- دوو وێنەی جیا لە تەنیشت یەک (دەست لێدان گەورەی دەکات) -->
                     <div class="grid grid-cols-2 gap-2">
                       <div onclick="openLightbox('${car.makeModel}', '${photo.title || 'بەش'}', '${photo.before}', '${photo.after}', 'before')" class="relative rounded-xl overflow-hidden border border-brand-border cursor-pointer group">
                         <img src="${photo.before}" class="h-28 w-full object-cover group-hover:scale-105 transition duration-200">
@@ -501,9 +570,18 @@
                         <span class="absolute bottom-1.5 start-1.5 text-[9px] bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.5 rounded font-bold">دوای کار</span>
                       </div>
                     </div>
-                    <p class="text-[10px] text-center text-slate-500">پەنجە لە وێنەکە بدە بۆ گەورەکردن و بەراورد</p>
+                    <p class="text-[10px] text-center text-slate-400 flex items-center justify-center gap-1 pt-1">
+                      <i data-lucide="zoom-in" class="w-3 h-3 text-brand-400"></i>
+                      <span>پەنجە لە وێنە بدە بۆ گەورەکردن و زووم</span>
+                    </p>
                   </div>
                 `).join('')}
+
+                <!-- دوگمەی ناردنی ئەم سەیارەیە -->
+                <button onclick="shareSingleCarLink('${car.id}')" class="w-full py-2 px-3 bg-slate-800 hover:bg-slate-700 text-sky-400 text-xs font-semibold rounded-xl border border-brand-border flex items-center justify-center gap-1.5">
+                  <i data-lucide="share" class="w-3.5 h-3.5"></i>
+                  <span>هاوبەشکردنی نموونەی ئەم سەیارەیە</span>
+                </button>
               </div>
             ` : ''}
           </div>
@@ -517,18 +595,21 @@
       renderShowcase();
     }
 
-    /* کارەکانی گەورەکردنی وێنە (Lightbox Logic) */
+    /* کارەکانی زووم و Lightbox */
     function openLightbox(carTitle, partTitle, beforeImg, afterImg, defaultTab) {
       currentLightbox = { carTitle, partTitle, before: beforeImg, after: afterImg, currentTab: defaultTab };
       document.getElementById('lightboxCarTitle').innerText = carTitle;
       document.getElementById('lightboxPartTitle').innerText = partTitle;
+      currentZoom = 1;
       updateLightboxDisplay();
       document.getElementById('photoLightbox').classList.remove('hidden');
+      setupDoubleTapZoom();
       lucide.createIcons();
     }
 
     function closeLightbox() {
       document.getElementById('photoLightbox').classList.add('hidden');
+      currentZoom = 1;
     }
 
     function switchLightboxTab(tab) {
@@ -550,6 +631,79 @@
         btnAfter.className = 'flex-1 py-2 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 bg-emerald-600 text-white shadow-lg shadow-emerald-600/30 ring-2 ring-emerald-400';
         btnBefore.className = 'flex-1 py-2 rounded-xl font-semibold text-xs flex items-center justify-center gap-1.5 bg-slate-800 text-slate-400 border border-brand-border';
       }
+      applyZoom();
+    }
+
+    /* کۆنتڕۆڵی زووم */
+    function zoomIn() {
+      if (currentZoom < 4) {
+        currentZoom = Math.min(4, currentZoom + 0.5);
+        applyZoom();
+      }
+    }
+
+    function zoomOut() {
+      if (currentZoom > 1) {
+        currentZoom = Math.max(1, currentZoom - 0.5);
+        applyZoom();
+      }
+    }
+
+    function resetZoom() {
+      currentZoom = 1;
+      applyZoom();
+    }
+
+    function applyZoom() {
+      const img = document.getElementById('lightboxImg');
+      if (img) {
+        img.style.transform = `scale(${currentZoom})`;
+      }
+      const badge = document.getElementById('zoomPercentBadge');
+      if (badge) {
+        badge.innerText = Math.round(currentZoom * 100) + '%';
+      }
+    }
+
+    function setupDoubleTapZoom() {
+      const img = document.getElementById('lightboxImg');
+      let lastTap = 0;
+      img.onclick = function() {
+        const now = new Date().getTime();
+        const diff = now - lastTap;
+        if (diff < 300 && diff > 0) {
+          if (currentZoom > 1) resetZoom();
+          else { currentZoom = 2; applyZoom(); }
+        }
+        lastTap = now;
+      };
+    }
+
+    /* ناردنی تەنها یەک سەیارە لە ڕێگەی واتسئەپ و لینک */
+    function shareSingleCarLink(carId) {
+      const car = carsDb.find(c => c.id === carId);
+      if (!car) return;
+
+      const singleUrl = `https://tinyurl.com/awena-car?car=${car.id}`;
+      const shareText = `سڵاو بەڕێز، ئەمە نموونەی کاری AWENA DETAILING بۆ سەیارەی ${car.makeModel} (${car.year}):\nخزمەتگوزاری: ${car.services}\nدەتوانیت لەم بەستەرەوە سەیری تەواوی وێنەکانی پێش و پاش و زووم بکەیت:\n${singleUrl}`;
+
+      navigator.clipboard.writeText(singleUrl).then(() => {
+        const openWp = confirm('لینکی ئەم سەیارەیە کۆپی کرا!\nئایا دەتەوێت ڕاستەوخۆ لە واتسئەپ بینێریت؟');
+        if (openWp) {
+          window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, '_blank');
+        }
+      }).catch(() => {
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, '_blank');
+      });
+    }
+
+    function copyPublicPortfolioLink() {
+      const publicUrl = 'https://tinyurl.com/awena-car';
+      navigator.clipboard.writeText(publicUrl).then(() => {
+        alert('لینکی گشتی هەموو سەیارەکان کۆپی کرا:\n' + publicUrl);
+      }).catch(() => {
+        prompt('ئەم لینکە کۆپی بکە و بینێرە بۆ کڕیار:', publicUrl);
+      });
     }
 
     function openNewCarModal() {
@@ -756,15 +910,6 @@
       btn.disabled = false;
       document.getElementById('submitBtnText').innerText = 'پاشەکەوتکردن لە سێرڤەری هەور';
       closeNewCarModal();
-    }
-
-    function copyPublicPortfolioLink() {
-      const publicUrl = 'https://tinyurl.com/awena-car';
-      navigator.clipboard.writeText(publicUrl).then(() => {
-        alert('لینکی گشتی کڕیار کۆپی کرا:\n' + publicUrl);
-      }).catch(() => {
-        prompt('ئەم لینکە کۆپی بکە و بینێرە بۆ کڕیار:', publicUrl);
-      });
     }
 
     function handleSearch(q) {
