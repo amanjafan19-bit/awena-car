@@ -69,7 +69,6 @@
        ========================================== -->
   <main id="showcaseView" class="max-w-md mx-auto p-4 space-y-4">
     
-    <!-- هۆشداری کاتێک کڕیار لە ڕێگەی لینکی یەک سەیارە هاتبێت -->
     <div id="singleCarNotice" class="hidden bg-sky-950/60 border border-brand-500/40 p-3 rounded-2xl flex items-center justify-between shadow-lg">
       <div>
         <span class="text-[10px] text-brand-400 font-bold block">تایبەت بەم سەیارەیە</span>
@@ -80,7 +79,6 @@
       </button>
     </div>
 
-    <!-- وتەی سەرەکی -->
     <div class="bg-gradient-to-b from-brand-card to-slate-900 p-4 rounded-2xl border border-brand-border text-center space-y-1.5 shadow-xl">
       <span class="text-[10px] bg-brand-500/20 text-brand-400 border border-brand-500/30 px-2.5 py-0.5 rounded-full font-bold">AWENA DETAILING</span>
       <h2 class="text-base font-black text-white">« ئۆتۆمبێلی خاوێنتر، شۆفێری دڵخۆشتر »</h2>
@@ -88,7 +86,6 @@
       <p class="text-[11px] text-slate-400 pt-1 border-t border-brand-border/40">دەست لە هەر وێنەیەک بدە بۆ بینینی بەراورد، بە پەنجە زوومی بکە.</p>
     </div>
 
-    <!-- سەیارەکان بۆ کڕیار (بەشی واتسئەپ لێرەوە لابرا) -->
     <div id="showcaseCardsContainer" class="space-y-3 pb-6"></div>
   </main>
 
@@ -157,12 +154,10 @@
       </button>
     </div>
 
-    <!-- فەزای وێنە بە جووڵە و زوومی دوو پەنجە -->
     <div id="lightboxViewport" class="flex-1 flex items-center justify-center p-1 overflow-hidden my-2 relative cursor-grab">
       <img id="lightboxImg" src="" class="max-h-[72vh] w-auto max-w-full rounded-xl object-contain shadow-2xl select-none pointer-events-none origin-center transition-transform duration-75">
     </div>
 
-    <!-- گۆڕین لە نێوان پێش و پاش -->
     <div class="bg-slate-900/90 border border-brand-border p-1.5 rounded-2xl flex items-center justify-center gap-2 max-w-sm mx-auto w-full">
       <button id="lightboxBtnBefore" onclick="switchLightboxTab('before')" class="flex-1 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition">
         <span class="w-2 h-2 rounded-full bg-rose-500"></span>
@@ -180,7 +175,14 @@
     <div class="bg-brand-card w-full max-w-md max-h-[92vh] overflow-y-auto rounded-t-2xl sm:rounded-2xl border border-brand-border shadow-2xl p-4 space-y-4">
       
       <div class="flex items-center justify-between border-b border-brand-border pb-3">
-        <h3 class="font-bold text-base text-white" id="modalTitle">تۆمارکردنی سەیارەی نوێ</h3>
+        <div>
+          <h3 class="font-bold text-base text-white" id="modalTitle">تۆمارکردنی سەیارەی نوێ</h3>
+          <!-- پیشاندانی بەرواری خۆکار لە سەرەوەی فۆڕم -->
+          <span class="text-[11px] text-brand-400 font-mono flex items-center gap-1 mt-0.5">
+            <i data-lucide="calendar" class="w-3 h-3"></i>
+            <span id="modalDateDisplay"></span>
+          </span>
+        </div>
         <button onclick="closeNewCarModal()" class="text-slate-400 hover:text-white p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
 
@@ -261,6 +263,7 @@
 
     let carsDb = [];
     let editingCarId = null;
+    let editingCarDate = null; // بۆ پاراستنی بەرواری کۆن کاتی دەستکاری
     let currentPhotoTarget = { pairIndex: null, type: null };
     let activePairsCount = 0;
     let tempPairPhotos = {};
@@ -268,10 +271,8 @@
     let singleCarFilterId = null;
     let isAdminUnlocked = localStorage.getItem('awena_admin_auth') === 'true';
 
-    // گۆڕاوەکانی Lightbox
     let currentLightbox = { carTitle: '', partTitle: '', before: '', after: '', currentTab: 'before' };
     
-    // سیستەمی زووم بە پەنجە
     let zoomScale = 1;
     let zoomPanX = 0;
     let zoomPanY = 0;
@@ -282,7 +283,6 @@
     let touchStartY = 0;
     let lastTapTime = 0;
 
-    // لێدانی ٣ جار لە لۆگۆ
     let secretLogoClicks = 0;
     let secretLogoTimer = null;
 
@@ -355,6 +355,15 @@
       lucide.createIcons();
     }
 
+    // هێنانی بەرواری ئەمڕۆ بە شێوەیەکی خۆکار (YYYY-MM-DD)
+    function getTodayFormatted() {
+      const d = new Date();
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
     async function loadCarsFromSupabase() {
       try {
         const { data, error } = await dbClient
@@ -372,7 +381,7 @@
             color: row.color,
             services: row.services,
             pricePaid: row.price_paid,
-            date: row.date,
+            date: row.date || getTodayFormatted(),
             photos: row.photos || []
           }));
           localStorage.setItem('awena_cars_cache', JSON.stringify(carsDb));
@@ -450,6 +459,7 @@
       document.getElementById('statTotalRevenue').innerHTML = `${totalRevenue.toLocaleString()} <span class="text-[10px]">د.ع</span>`;
     }
 
+    /* پیشاندانی بەرواری خۆکار لەسەر کارتی سەیارە */
     function renderCarsList(filtered = null) {
       const container = document.getElementById('carsListContainer');
       const list = filtered || carsDb;
@@ -465,11 +475,20 @@
             <div>
               <h3 class="font-extrabold text-sm text-white">${car.makeModel} (${car.year})</h3>
               <p class="text-xs text-slate-400">${car.customerName} • <span class="font-mono text-brand-400 dir-ltr">${car.customerPhone}</span></p>
-              <span class="text-[11px] text-slate-400 block mt-0.5">${car.color}</span>
+              
+              <!-- بەرواری خۆکاری سەیارەکە لەگەڵ ڕەنگەکەی -->
+              <div class="flex items-center gap-1.5 mt-1 text-[11px] text-slate-400">
+                <span>${car.color}</span>
+                <span>•</span>
+                <span class="bg-slate-800 text-brand-400 px-2 py-0.5 rounded-lg font-mono text-[10px] flex items-center gap-1 font-semibold border border-brand-border/60">
+                  <i data-lucide="calendar" class="w-3 h-3 text-brand-400"></i>
+                  ${car.date || getTodayFormatted()}
+                </span>
+              </div>
             </div>
             <div class="text-end">
               <span class="text-xs font-black text-emerald-400 block">${(car.pricePaid || 0).toLocaleString()} د.ع</span>
-              <span class="text-[10px] text-slate-500">${car.photos ? car.photos.length : 0} جووتە وێنە</span>
+              <span class="text-[10px] text-slate-500 mt-1 block">${car.photos ? car.photos.length : 0} جووتە وێنە</span>
             </div>
           </div>
 
@@ -477,7 +496,7 @@
             <span class="text-brand-400 font-semibold">ئیش:</span> ${car.services}
           </div>
 
-          <!-- دێڕی نوێ: دوگمەی شینی تۆخ لە تەنیشت دەستکاریکردن -->
+          <!-- دوگمەی شینی تۆخی کۆپیکردنی لینک لە تەنیشت دەستکاریکردن -->
           <div class="flex items-center gap-2 pt-1 border-t border-brand-border/60">
             <button onclick="copySingleCarLink('${car.id}')" class="flex-1 py-1.5 px-2 bg-blue-700 hover:bg-blue-600 active:scale-[0.98] text-white text-xs font-semibold rounded-xl flex items-center justify-center gap-1.5 shadow transition">
               <i data-lucide="copy" class="w-3.5 h-3.5"></i>
@@ -517,7 +536,11 @@
               <div>
                 <h3 class="font-extrabold text-sm text-white">${car.makeModel}</h3>
                 <p class="text-xs text-brand-400 mt-0.5">${car.services}</p>
-                <span class="text-[10px] text-slate-400 mt-1 block">${car.year} • ${car.color}</span>
+                <div class="flex items-center gap-1.5 mt-1 text-[10px] text-slate-400">
+                  <span>${car.year} • ${car.color}</span>
+                  <span>•</span>
+                  <span class="font-mono text-slate-400">${car.date || getTodayFormatted()}</span>
+                </div>
               </div>
               <div class="flex items-center gap-2">
                 <span class="text-[10px] bg-brand-500/10 text-brand-400 border border-brand-500/20 px-2.5 py-0.5 rounded-full font-bold">
@@ -621,7 +644,6 @@
       }
     }
 
-    /* زووم و ڕاکێشانی سروشتی بە پەنجە */
     function initNaturalTouchZoom() {
       const vp = document.getElementById('lightboxViewport');
       if (!vp) return;
@@ -680,7 +702,6 @@
       });
     }
 
-    /* کۆپیکردنی لینکی یەک سەیارە بە تەواوی */
     function copySingleCarLink(carId) {
       const singleUrl = `https://tinyurl.com/awena-car?car=${carId}`;
       navigator.clipboard.writeText(singleUrl).then(() => {
@@ -702,7 +723,11 @@
     function openNewCarModal() {
       if (!isAdminUnlocked) return;
       editingCarId = null;
+      editingCarDate = null;
+      
+      const today = getTodayFormatted();
       document.getElementById('modalTitle').innerText = 'تۆمارکردنی سەیارەی نوێ';
+      document.getElementById('modalDateDisplay').innerText = `بەرواری ئەمڕۆ: ${today}`;
       document.getElementById('submitBtnText').innerText = 'پاشەکەوتکردن لە سێرڤەری هەور';
       
       document.getElementById('cust_name').value = '';
@@ -728,7 +753,10 @@
       if (!car) return;
 
       editingCarId = carId;
+      editingCarDate = car.date || getTodayFormatted(); // بەرواری کۆنەکەی دەپارێزێت
+
       document.getElementById('modalTitle').innerText = 'دەستکاریکردنی سەیارە';
+      document.getElementById('modalDateDisplay').innerText = `بەرواری تۆمارکردن: ${editingCarDate}`;
       document.getElementById('submitBtnText').innerText = 'پاشەکەوتکردنی گۆڕانکارییەکان';
 
       document.getElementById('cust_name').value = car.customerName;
@@ -885,6 +913,9 @@
         }
       }
 
+      // دیاریکردنی بەرواری خۆکار (ئەگەر نوێ بێت هی ئەمڕۆیە، ئەگەر دەستکاری بێت بەروارە کۆنەکەیە)
+      const finalDate = editingCarDate || getTodayFormatted();
+
       const carData = {
         id: editingCarId || ('car-' + Date.now()),
         customerName: document.getElementById('cust_name').value,
@@ -894,7 +925,7 @@
         color: document.getElementById('car_color').value,
         services: document.getElementById('car_services').value,
         pricePaid: parseFloat(document.getElementById('car_price').value) || 0,
-        date: new Date().toISOString().split('T')[0],
+        date: finalDate,
         photos: photosList
       };
 
